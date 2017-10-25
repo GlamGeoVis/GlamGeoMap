@@ -1,17 +1,17 @@
 {
-  "name": "react-boilerplate",
-  "version": "3.5.0",
-  "description": "A highly scalable, offline-first foundation with the best DX and a focus on performance and best practices",
+  "name": "GlamGeoMap",
+  "version": "0.0.1",
+  "description": "GLAM visualization tool",
   "repository": {
     "type": "git",
-    "url": "git://github.com/react-boilerplate/react-boilerplate.git"
+    "url": "git://github.com/Tommos0/GlamGeoMap.git"
   },
   "engines": {
     "npm": ">=3",
     "node": ">=5"
   },
-  "author": "Max Stoiber",
-  "license": "MIT",
+  "author": "Tom Klaver",
+  "license": "Apache-2.0",
   "scripts": {
     "analyze:clean": "rimraf stats.json",
     "preanalyze": "npm run analyze:clean",
@@ -224,6 +224,7 @@
     "intl": "1.2.5",
     "invariant": "2.2.2",
     "ip": "1.1.5",
+    "leaflet": "^1.2.0",
     "lodash": "4.17.4",
     "minimist": "1.2.0",
     "prop-types": "15.5.10",
@@ -231,6 +232,7 @@
     "react-dom": "15.6.1",
     "react-helmet": "5.1.3",
     "react-intl": "2.3.0",
+    "react-leaflet": "^1.7.1",
     "react-loadable": "4.0.3",
     "react-redux": "5.0.5",
     "react-router-dom": "4.1.1",
@@ -278,7 +280,7 @@
     "file-loader": "0.11.1",
     "html-loader": "0.4.5",
     "html-webpack-plugin": "2.29.0",
-    "image-webpack-loader": "2.0.0",
+    "image-webpack-loader": "^2.0.0",
     "imports-loader": "0.7.1",
     "jest-cli": "20.0.4",
     "lint-staged": "3.5.1",
