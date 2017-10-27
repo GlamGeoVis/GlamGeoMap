@@ -14,8 +14,8 @@ import styled from 'styled-components';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FormControl, ControlLabel, FormGroup, Glyphicon, Panel } from 'react-bootstrap';
 
-import LeafletMap from '../../components/LeafletMap';
-import Timeline from '../../components/Timeline';
+import Timeline from '../containers/Timeline/index';
+import LeafletMap from '../containers/LeafletMap/index';
 
 const LeftSideBarContents = () => (
   <Panel>

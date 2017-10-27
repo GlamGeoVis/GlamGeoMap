@@ -1,16 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import './timeline.css';
+import { setTimeRange } from '../containers/Timeline/actions';
 
 const start = 1500;
 const end = 2000;
 
 export default class Timeline extends React.Component {
   state = {
-    selectedStart: 1800,
-    selectedEnd: 1900,
     zoomStart: start,
     zoomEnd: end,
   };
@@ -20,7 +20,7 @@ export default class Timeline extends React.Component {
   }
 
   setSelectionValues = (values) => {
-    this.setState({ selectedStart: values[0], selectedEnd: values[1] });
+    this.props.dispatch(setTimeRange(values[0], values[1]));
   };
 
   zoom = (scale, xMoved) => { // called from d3 zoom
@@ -30,17 +30,17 @@ export default class Timeline extends React.Component {
     const zoomStart = Math.round(start - (xMoved * range));
     const zoomEnd = Math.round(zoomStart + range);
     this.setState({ zoomStart, zoomEnd });
-    if (this.state.selectedStart < zoomStart) {
-      this.setState({ selectedStart: zoomStart });
+    if (this.props.range.start < zoomStart) {
+      this.props.dispatch(setTimeRange(zoomStart, this.props.range.end));
     }
-    if (this.state.selectedEnd > zoomEnd) {
-      this.setState({ selectedEnd: zoomEnd });
+    if (this.props.range.end > zoomEnd) {
+      this.props.dispatch(setTimeRange(this.props.range.start, zoomEnd));
     }
   };
 
   render() {
     const leftButtonPosition =
-      (this.state.selectedStart - this.state.zoomStart) / (this.state.zoomEnd - this.state.zoomStart);
+      (this.props.range.start - this.state.zoomStart) / (this.state.zoomEnd - this.state.zoomStart);
 
     return (
       <div>
@@ -49,12 +49,12 @@ export default class Timeline extends React.Component {
           step={1}
           min={this.state.zoomStart}
           max={this.state.zoomEnd}
-          value={[this.state.selectedStart, this.state.selectedEnd]}
+          value={[this.props.range.start, this.props.range.end]}
           onChange={this.setSelectionValues}
           // handle={(props) => <span>{JSON.stringify(props)}</span>}
         />
         <div style={{ position: 'absolute', marginTop: '5px', left: 100*leftButtonPosition+'%'}}>
-          { this.state.selectedStart }
+          { this.props.range.start }
         </div>
         <div style={{ float: 'left' }}>{Math.round(this.state.zoomStart)}</div>
         <div style={{ float: 'right' }}>{Math.round(this.state.zoomEnd)}</div>
@@ -63,6 +63,13 @@ export default class Timeline extends React.Component {
   }
 }
 
+Timeline.propTypes = {
+  range: PropTypes.shape({
+    start: PropTypes.number,
+    end: PropTypes.number,
+  }),
+  dispatch: PropTypes.func.isRequired,
+};
 
 const init_d3 = (reactElement) => {
   const data = [];
