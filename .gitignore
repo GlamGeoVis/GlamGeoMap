@@ -59,3 +59,7 @@ typings/
 
 .idea/
 build/
+
+# Python
+*.pyc
+venv/
