@@ -45,19 +45,7 @@ export default class Timeline extends React.Component {
     return (
       <div>
         <div style={{ width: '100%', marginBottom: '-5px' }} id="d3" />
-        <Range
-          step={1}
-          min={this.state.zoomStart}
-          max={this.state.zoomEnd}
-          value={[this.props.range.start, this.props.range.end]}
-          onChange={this.setSelectionValues}
-          // handle={(props) => <span>{JSON.stringify(props)}</span>}
-        />
-        <div style={{ position: 'absolute', marginTop: '5px', left: 100*leftButtonPosition+'%'}}>
-          { this.props.range.start }
-        </div>
-        <div style={{ float: 'left' }}>{Math.round(this.state.zoomStart)}</div>
-        <div style={{ float: 'right' }}>{Math.round(this.state.zoomEnd)}</div>
+
       </div>
     );
   }
@@ -74,8 +62,9 @@ Timeline.propTypes = {
 const init_d3 = (reactElement) => {
   const data = [];
   const ordinals = [];
+  const marginLeft = 20;
 
-  for (let i = start; i < end; i++) {
+  for (let i = start; i < end; i += 1) {
     data.push({
       value: Math.random() * 10,
       year: i,
@@ -84,89 +73,143 @@ const init_d3 = (reactElement) => {
     ordinals.push(i);
   }
 
-  let width = document.getElementById('d3').scrollWidth;
-  let height = 100;
-  let radius = (Math.min(width, height) / 2) - 10;
+  const width = document.getElementById('d3').scrollWidth;
+  const height = 100;
 
   const svg = d3.select('#d3')
     .append('svg')
     .attr('width', '100%')
-    .attr('height', 100)
-    .append('g')
-    .call(
-      d3.zoom()
-        .translateExtent([[0, 0], [width, height]])
-        .extent([[0, 0], [width, height]])
-        .on('zoom', zoom)
-    );
-  console.log(svg);
-  // the scale
-  const x = d3.scaleLinear().range([0, width]);
-  const y = d3.scaleLinear().range([height, 0]);
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
-  const xScale = x.domain([-1, ordinals.length]);
-  const yScale = y.domain([0, d3.max(data, (d) => d.value)]);
-  // for the width of rect
-  const xBand = d3.scaleBand().domain(d3.range(-1, ordinals.length)).range([0, width]);
+    .attr('height', 120)
+    .append('g');
 
-  // zoomable rect
-  svg.append('rect')
-    .attr('class', 'zoom-panel')
-    .attr('width', width)
-    .attr('height', height);
+  // x maps year to pixels
+  const x = d3.scaleLinear()
+    .domain([reactElement.state.zoomStart, reactElement.state.zoomEnd])
+    .range([marginLeft, width]);
 
-  // x axis
-  const xAxis = svg.append('g')
+  let currentX = x;
+
+  // for the year bins (maps index to pixels, has bandWidth)
+  const xBand = d3.scaleBand()
+    .domain(d3.range(0, data.length))
+    .range(x.range())
+    .paddingInner(0.1)
+  ;
+
+  // maps index to pixels
+  const xScale = x.copy().domain([0, data.length]);
+
+  // maps Y value to height (inverse, large height means small bar)
+  const yScale = d3.scaleLinear().range([height, 0]).domain([0, d3.max(data, (d) => d.value)]);
+
+  const zoom = d3.zoom()
+    .scaleExtent([1, Infinity])
+    .translateExtent([[0, 0], [width, height]])
+    .extent([[0, 0], [width, height]])
+    .on('zoom', zoomed);
+
+  // zoomable group
+  const bg = svg.append('g')
+    .attr('width', width - marginLeft)
+    .attr('x', marginLeft)
+    .attr('height', height + 40)
+    .call(zoom);
+
+  // this is to catch all events for zooming
+  bg.append('rect')
+    .attr('width', width - marginLeft)
+    .attr('x', marginLeft)
+    .attr('height', height + 40)
+    .attr('fill', 'white');
+
+  // background colour for graph
+  bg.append('rect')
+    .attr('width', width - marginLeft)
+    .attr('x', marginLeft)
+    .attr('height', height)
+    .attr('fill', '#333');
+
+  const setXAxis = (scale) => d3.axisBottom(scale).tickFormat((d) => data[d] && data[d].year);
+
+  const xAxis = bg.append('g')
     .attr('class', 'xAxis')
     .attr('transform', `translate(0, ${height})`)
-    .call(
-      d3.axisBottom(xScale).tickFormat((d, e) => ordinals[d])
-    );
+    .call(setXAxis(xScale));
 
-  // y axis
-  const yAxis = svg.append('g')
+  // y-axis
+  bg.append('g')
     .attr('class', 'y axis')
+    .attr('transform', `translate(${marginLeft},0)`)
     .call(d3.axisLeft(yScale));
 
-  const bars = svg.append('g')
+  // define clippath to hide overflow
+  svg.append('defs')
+    .append('clipPath')
+    .attr('id', 'my-clip-path')
+    .append('rect')
+    .attr('width', width - marginLeft)
+    .attr('x', marginLeft)
+    .attr('height', height);
+
+  const bars = bg.append('g')
+    .attr('clip-path', 'url(#my-clip-path)')
     .selectAll('.bar')
     .data(data)
     .enter()
     .append('rect')
-    .attr('class', 'bar')
-    .attr('x', (d, i) => xScale(i) - xBand.bandwidth() * 0.9 / 2)
-    .attr('y', (d, i) => yScale(d.value))
-    .attr('width', xBand.bandwidth() * 0.9)
-    .attr('height', (d) => height - yScale(d.value));
+    .attr('x', (d, i) => xBand(i))
+    .attr('y', (d) => yScale(d.value))
+    .attr('width', xBand.bandwidth())
+    .attr('height', (d) => height - yScale(d.value))
+    .attr('fill', '#0ff')
+  ;
 
-  const hideTicksWithoutLabel = function () {
-    d3.selectAll('.xAxis .tick text').each(function (d) {
-      if (this.innerHTML === '') {
-        this.parentNode.style.display = 'none';
-      }
-    });
-  };
+  const brush = d3.brushX()
+    .extent([[marginLeft, 0], [width, height]])
+    .on('end', brushended)
+    .handleSize(24);
 
-  function zoom() {
-    if (d3.event.transform.k < 1) {
-      d3.event.transform.k = 1;
-      return;
+  const brushElm = bg.append('g')
+    .attr('class', 'brush')
+    .call(brush);
+
+  let x1 = 1700;
+  let x2 = 1800;
+
+  function zoomed() {
+    const t = d3.event.transform;
+    // t.k is scale factor, t.x is panning
+
+    // transform x axis
+    xAxis.call(setXAxis(t.rescaleX(xScale)));
+
+    // update bars
+    currentX = t.rescaleX(x);
+    const xBandTransformed = xBand.domain(d3.range(0, data.length / t.k));
+    bars.attr('x', (d) => currentX(d.year) - (xBandTransformed.bandwidth() / 2))
+        .attr('width', xBandTransformed.bandwidth())
+    ;
+
+    // update brush
+    const minimumYear = currentX.invert(marginLeft);
+    if (x1 < minimumYear) {
+      x1 = minimumYear;
     }
+    const maximumYear = currentX.invert(width);
+    if (x2 > maximumYear) {
+      x2 = maximumYear;
+    }
+    brushElm.call(brush.move, [x1, x2].map(currentX));
+  }
 
-    // xAxis.call(
-    //   d3.axisBottom(d3.event.transform.rescaleX(xScale)).tickFormat((d, e, target) => {
-    //     // has bug when the scale is too big
-    //     if (Math.floor(d) === d3.format('.1f')(d)) return ordinals[Math.floor(d)];
-    //     return ordinals[d];
-    //   })
-    // );
-
-    hideTicksWithoutLabel();
-
-    // the bars transform
-    bars.attr('transform', `translate(${d3.event.transform.x},0)scale(${d3.event.transform.k},1)`);
-    reactElement.zoom(d3.event.transform.k, d3.event.transform.x / width);
-    // console.log(d3.event.transform.k, d3.event.transform.x / width);
-    // console.log(xScale(600));
+  function brushended() {
+    const years = d3.event.selection.map(currentX.invert);
+    x1 = years[0];
+    x2 = years[1];
+    if (Math.round(x1) !== x1 || Math.round(x2) !== x2) {
+      x1 = Math.round(x1);
+      x2 = Math.round(x2);
+      brushElm.call(brush.move, [x1, x2].map(currentX));
+    }
   }
 }
