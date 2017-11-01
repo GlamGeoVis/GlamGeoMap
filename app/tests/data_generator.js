@@ -6,4 +6,5 @@ export const booksPerYear = (startYear, endYear, maxBooks = 100) => {
       nBooks: Math.round(Math.random() * maxBooks),
     });
   }
+  return data;
 };

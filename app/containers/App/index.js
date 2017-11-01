@@ -1,9 +1,7 @@
-/**
+/*
+ * HomePage
  *
- * App.js
- *
- * This component is the skeleton around the actual pages, and should only
- * contain code that should be seen on all pages. (e.g. navigation bar)
+ * This is the first thing users see of our App, at the '/' route
  *
  * NOTE: while this component should technically be a stateless functional
  * component (SFC), hot reloading does not currently support SFCs. If hot
@@ -11,19 +9,18 @@
  * the linting exception.
  */
 
-import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { compose } from 'redux';
+import Layout from '../../components/Layout';
+import injectSaga from '../../utils/injectSaga';
+import saga from './saga';
 
-import HomePage from 'containers/HomePage/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
+// const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
-export default function App() {
-  return (
-    <div>
-      <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route component={NotFoundPage} />
-      </Switch>
-    </div>
-  );
-}
+// const withReducer = injectReducer({ key: 'home', reducer });
+const withSaga = injectSaga({ key: 'home', saga });
+
+export default compose(
+  // withReducer,
+  withSaga,
+  // withConnect,
+)(Layout);
