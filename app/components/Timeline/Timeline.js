@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import 'rc-slider/assets/index.css';
-import './timeline.css';
-import { setTimeRange } from '../containers/Timeline/actions';
+import styled from 'styled-components';
+import { setTimeRange } from '../../containers/Timeline/actions';
 
 export default class Timeline extends React.Component {
   componentDidMount() {
@@ -16,12 +15,20 @@ export default class Timeline extends React.Component {
 
   render() {
     return (
-      <div>
-        <div style={{ width: '100%', marginBottom: '-5px' }} id="d3" />
-      </div>
+      <TimelineRoot id="d3_timeline" />
     );
   }
 }
+
+const TimelineRoot = styled.div`
+  & > div#d3 {
+    width: 100%;
+    margin-bottom: -5px;
+  }
+  & .bar {
+    fill: steelblue;
+  }
+`;
 
 Timeline.propTypes = {
   // eslint-disable-next-line react/no-unused-prop-types
@@ -50,10 +57,10 @@ const initD3 = (startYear, endYear, callback) => {
     ordinals.push(i);
   }
 
-  const width = document.getElementById('d3').scrollWidth;
+  const width = document.getElementById('d3_timeline').scrollWidth;
   const height = 100;
 
-  const svg = d3.select('#d3')
+  const svg = d3.select('#d3_timeline')
     .append('svg')
     .attr('width', '100%')
     .attr('height', 120)
@@ -134,11 +141,12 @@ const initD3 = (startYear, endYear, callback) => {
     .data(data)
     .enter()
     .append('rect')
+    .attr('class', 'bar')
     .attr('x', (d, i) => xBand(i))
     .attr('y', (d) => yScale(d.value))
     .attr('width', xBand.bandwidth())
     .attr('height', (d) => height - yScale(d.value))
-    .attr('fill', '#0ff')
+    // .attr('fill', '#0ff')
   ;
 
   const brush = d3.brushX()

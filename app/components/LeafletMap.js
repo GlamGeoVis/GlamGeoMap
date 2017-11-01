@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
+import { Map, TileLayer } from 'react-leaflet';
 import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { setViewport } from '../containers/LeafletMap/actions';
 import './leaflet.css';
 import CustomMarker from './CustomMarker';
-import LeafletOverlay from './LeafletOverlay';
 
-export default class LeafletMap extends React.PureComponent {
+window.L = leaflet;
+
+/* eslint-disable react/no-array-index-key */
+
+export default class LeafletMap extends React.Component {
   componentDidMount() {
-    window.leaflet = leaflet;
     this.onViewportChanged();
   }
 
@@ -44,14 +46,13 @@ export default class LeafletMap extends React.PureComponent {
           attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
         />
-        {/*<LeafletOverlay />*/}
-        <CustomMarker key="cs" position={this.position}>
-          <div style={{ backgroundColor: 'red' }}>
-            <span>
-              A pretty CSS3 popup. <br /> Easily customizable.
-            </span>
-          </div>
-        </CustomMarker>
+        {this.props.data && this.props.data.map((data, idx) => (
+          <CustomMarker key={idx} position={[data.lat, data.lng]}>
+            <div style={{ backgroundColor: 'red' }}>
+              { data.count }
+            </div>
+          </CustomMarker>
+          ))}
       </Map>
     );
   }
@@ -64,4 +65,5 @@ export default class LeafletMap extends React.PureComponent {
 LeafletMap.propTypes = {
   style: PropTypes.object,
   dispatch: PropTypes.func,
+  data: PropTypes.array,
 };

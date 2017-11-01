@@ -1,18 +1,18 @@
 
 import {
-  defaultAction,
+  setTimeRange,
 } from '../actions';
 import {
-  DEFAULT_ACTION,
+  SET_TIME_RANGE,
 } from '../constants';
 
 describe('Timeline actions', () => {
-  describe('Default Action', () => {
-    it('has a type of DEFAULT_ACTION', () => {
+  describe('setTimeRange Action', () => {
+    it('has a type of SET_TIME_RANGE', () => {
       const expected = {
-        type: DEFAULT_ACTION,
+        type: SET_TIME_RANGE,
       };
-      expect(defaultAction()).toEqual(expected);
+      expect(setTimeRange().type).toEqual(expected.type);
     });
   });
 });

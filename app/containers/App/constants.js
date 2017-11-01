@@ -13,3 +13,7 @@ export const DEFAULT_LOCALE = 'en';
 export const REQUEST_DATA = 'app/REQUEST_DATA';
 export const REQUEST_COMPLETED = 'app/REQUEST_DATA/completed';
 export const REQUEST_ERROR = 'app/REQUEST_DATA/error';
+
+export const BACKEND_URL = process.env.NODE_ENV === 'production'
+  ? 'http://some.server.com'
+  : 'http://localhost:8000';

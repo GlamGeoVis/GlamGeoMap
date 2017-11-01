@@ -4,8 +4,8 @@ import 'whatwg-fetch';
 
 import { SET_VIEWPORT } from '../LeafletMap/constants';
 import { SET_TIME_RANGE } from '../Timeline/constants';
-
-import {request, requestCompleted, requestError} from './actions';
+import { BACKEND_URL } from './constants';
+import { request, requestCompleted, requestError } from './actions';
 
 const getParametersForRequest = (state) => ({
   viewport: state.get('viewport'),
@@ -15,7 +15,7 @@ const getParametersForRequest = (state) => ({
 const createFetchRequestOptions = (parameters) => ({
   method: 'POST',
   headers: new Headers({
-    'Content-Type': 'application/json; charset=UTF-8'
+    'Content-Type': 'application/json; charset=UTF-8',
   }),
   // mode: 'cors',
   body: JSON.stringify(parameters),
@@ -24,15 +24,15 @@ const createFetchRequestOptions = (parameters) => ({
 
 export function* requestData() {
   try {
-    yield call(delay, 1000);
+    yield call(delay, 100);
     const parameters = yield select(getParametersForRequest);
     yield put(request(parameters));
-    // const response = yield fetch('http://localhost:3000/test', createFetchRequestOptions(parameters));
-    // if (response.status !== 200) {
-    //   throw Error(`response status code was ${response.status}`);
-    // }
-    // const dataJSON = yield response.json();
-    // yield put(requestCompleted(dataJSON));
+    const response = yield fetch(`${BACKEND_URL}/jsonData`, createFetchRequestOptions(parameters));
+    if (response.status !== 200) {
+      throw Error(`response status code was ${response.status}`);
+    }
+    const dataJSON = yield response.json();
+    yield put(requestCompleted(dataJSON));
   } catch (err) {
     console.log('error', err);
     yield put(requestError(err));

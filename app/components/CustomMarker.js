@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { Marker as LeafletMarker } from 'leaflet';
 import { Marker } from 'react-leaflet';
 import * as ReactDOM from 'react-dom';
@@ -11,15 +12,14 @@ class CustomLeafletMarker extends LeafletMarker {
   }
 
   onAdd(map) {
-    // this._zoomAnimated = this._zoomAnimated && map.options.markerZoomAnimation;
-    //
-    // if (this._zoomAnimated) {
-    map.on('zoomanim', console.log, this);
-    // }
-    this._initIcon();
-    // this._icon = this.element;
-    // this.getPane().appendChild(this._icon);
-    // this.update();
+    this._zoomAnimated = this._zoomAnimated && map.options.markerZoomAnimation;
+    if (this._zoomAnimated) {
+      map.on('zoomanim', this._animateZoom, this);
+    }
+    this._icon = this.options.icon.createIcon(this._icon);
+    this._icon = this.element;
+    this.getPane().appendChild(this._icon);
+    this.update();
   }
 }
 
@@ -36,14 +36,12 @@ export default class CustomMarker extends Marker {
 
   componentWillReceiveProps(newProps) {
     super.componentWillReceiveProps(newProps);
-    this.renderChildren(this.newProps.children);
+    this.renderChildren(newProps.children);
   }
 
   componentDidMount() {
     super.componentDidMount();
     this.renderChildren(this.props.children);
-    console.log(this.props.key);
-    console.log('123');
   }
 
   render() {

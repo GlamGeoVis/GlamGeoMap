@@ -1,9 +1,7 @@
-
-import { fromJS } from 'immutable';
 import timelineReducer from '../reducer';
 
 describe('timelineReducer', () => {
   it('returns the initial state', () => {
-    expect(timelineReducer(undefined, {})).toEqual(fromJS({}));
+    expect(timelineReducer(undefined, {})).toEqual({ range: { end: 2000, start: 1500 } });
   });
 });

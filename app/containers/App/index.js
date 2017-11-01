@@ -13,14 +13,16 @@ import { compose } from 'redux';
 import Layout from '../../components/Layout';
 import injectSaga from '../../utils/injectSaga';
 import saga from './saga';
+import injectReducer from '../../utils/injectReducer';
+import reducer from './reducer';
 
 // const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
-// const withReducer = injectReducer({ key: 'home', reducer });
+const withReducer = injectReducer({ key: 'data', reducer });
 const withSaga = injectSaga({ key: 'home', saga });
 
 export default compose(
-  // withReducer,
+  withReducer,
   withSaga,
   // withConnect,
 )(Layout);

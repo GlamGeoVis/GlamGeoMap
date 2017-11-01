@@ -9,7 +9,7 @@ import { compose } from 'redux';
 
 import injectReducer from 'utils/injectReducer';
 import reducer from './reducer';
-import Timeline from '../../components/Timeline';
+import Timeline from '../../components/Timeline/Timeline';
 
 const mapStateToProps = (state) => state.get('timeline');
 
