@@ -1,70 +1,47 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import './timeline.css';
 import { setTimeRange } from '../containers/Timeline/actions';
 
-const start = 1500;
-const end = 2000;
-
 export default class Timeline extends React.Component {
-  state = {
-    zoomStart: start,
-    zoomEnd: end,
-  };
-
   componentDidMount() {
-    init_d3(this);
+    initD3(this.props.minYear, this.props.maxYear, this.setSelectionValues);
   }
 
-  setSelectionValues = (values) => {
-    this.props.dispatch(setTimeRange(values[0], values[1]));
-  };
-
-  zoom = (scale, xMoved) => { // called from d3 zoom
-    // scale is scale factor, eg scale == 2 means zoomed to double size
-    // xMoved is negative, -1 means completely scrolled to the right
-    const range = (end - start) / scale;
-    const zoomStart = Math.round(start - (xMoved * range));
-    const zoomEnd = Math.round(zoomStart + range);
-    this.setState({ zoomStart, zoomEnd });
-    if (this.props.range.start < zoomStart) {
-      this.props.dispatch(setTimeRange(zoomStart, this.props.range.end));
-    }
-    if (this.props.range.end > zoomEnd) {
-      this.props.dispatch(setTimeRange(this.props.range.start, zoomEnd));
-    }
+  setSelectionValues = (start, end) => {
+    this.props.dispatch(setTimeRange(start, end));
   };
 
   render() {
-    const leftButtonPosition =
-      (this.props.range.start - this.state.zoomStart) / (this.state.zoomEnd - this.state.zoomStart);
-
     return (
       <div>
         <div style={{ width: '100%', marginBottom: '-5px' }} id="d3" />
-
       </div>
     );
   }
 }
 
 Timeline.propTypes = {
+  // eslint-disable-next-line react/no-unused-prop-types
   range: PropTypes.shape({
     start: PropTypes.number,
     end: PropTypes.number,
   }),
   dispatch: PropTypes.func.isRequired,
+  minYear: PropTypes.number,
+  maxYear: PropTypes.number,
 };
 
-const init_d3 = (reactElement) => {
+const initD3 = (startYear, endYear, callback) => {
   const data = [];
   const ordinals = [];
   const marginLeft = 20;
+  let hasBrushed = false;
+  let brushRange = [startYear, endYear];
 
-  for (let i = start; i < end; i += 1) {
+  for (let i = startYear; i < endYear; i += 1) {
     data.push({
       value: Math.random() * 10,
       year: i,
@@ -84,7 +61,7 @@ const init_d3 = (reactElement) => {
 
   // x maps year to pixels
   const x = d3.scaleLinear()
-    .domain([reactElement.state.zoomStart, reactElement.state.zoomEnd])
+    .domain([startYear, endYear])
     .range([marginLeft, width]);
 
   let currentX = x;
@@ -173,12 +150,9 @@ const init_d3 = (reactElement) => {
     .attr('class', 'brush')
     .call(brush);
 
-  let x1 = 1700;
-  let x2 = 1800;
-
   function zoomed() {
     const t = d3.event.transform;
-    // t.k is scale factor, t.x is panning
+    // t.k is scale factor, t.x is translation
 
     // transform x axis
     xAxis.call(setXAxis(t.rescaleX(xScale)));
@@ -190,26 +164,29 @@ const init_d3 = (reactElement) => {
         .attr('width', xBandTransformed.bandwidth())
     ;
 
-    // update brush
+    // update brush, detect if zoomed in past current bounds
     const minimumYear = currentX.invert(marginLeft);
-    if (x1 < minimumYear) {
-      x1 = minimumYear;
-    }
     const maximumYear = currentX.invert(width);
-    if (x2 > maximumYear) {
-      x2 = maximumYear;
+    if (hasBrushed) {
+      brushElm.call(brush.move, [
+        brushRange[0] < minimumYear ? minimumYear : brushRange[0],
+        brushRange[1] > maximumYear ? maximumYear : brushRange[1],
+      ].map(currentX));
     }
-    brushElm.call(brush.move, [x1, x2].map(currentX));
   }
 
   function brushended() {
-    const years = d3.event.selection.map(currentX.invert);
-    x1 = years[0];
-    x2 = years[1];
-    if (Math.round(x1) !== x1 || Math.round(x2) !== x2) {
-      x1 = Math.round(x1);
-      x2 = Math.round(x2);
-      brushElm.call(brush.move, [x1, x2].map(currentX));
+    hasBrushed = true;
+    if (d3.event.selection) {
+      const years = d3.event.selection.map(currentX.invert);
+      if (brushRange[0] !== years[0] || brushRange[1] !== years[1]) { // changed
+        brushRange = years.map(Math.round);
+        callback(brushRange[0], brushRange[1]);
+        brushElm.call(brush.move, brushRange.map(currentX));
+      }
+    } else { // happens when you drag the left and right end of brush on top of eachother
+      hasBrushed = false;
+      callback(startYear, endYear);
     }
   }
-}
+};
