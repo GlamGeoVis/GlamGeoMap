@@ -7,7 +7,7 @@ const initialState = [];
 function dataReducer(state = initialState, action) {
   switch (action.type) {
     case REQUEST_COMPLETED:
-      return action.data;
+      return { clusters: action.data.clusters, years: action.data.years };
     default:
       return state;
   }

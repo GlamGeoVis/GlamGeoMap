@@ -11,7 +11,10 @@ import injectReducer from 'utils/injectReducer';
 import reducer from './reducer';
 import Timeline from '../../components/Timeline/Timeline';
 
-const mapStateToProps = (state) => state.get('timeline');
+const mapStateToProps = (state) => ({
+  timeline: state.get('timeline').timeline,
+  years: state.get('data').years,
+});
 
 function mapDispatchToProps(dispatch) {
   return {
