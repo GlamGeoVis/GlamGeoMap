@@ -1,3 +1,5 @@
+![TravisCIBadge](https://travis-ci.org/GlamGeoVis/GlamGeoMap.svg?branch=master)
+
 Web based GLAMVis implementation.
 
 This project was bootstrapped using [react-boilerplate](https://github.com/react-boilerplate/react-boilerplate).
