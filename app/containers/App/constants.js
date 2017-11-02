@@ -15,5 +15,5 @@ export const REQUEST_COMPLETED = 'app/REQUEST_DATA/completed';
 export const REQUEST_ERROR = 'app/REQUEST_DATA/error';
 
 export const BACKEND_URL = process.env.NODE_ENV === 'production'
-  ? 'http://some.server.com'
+  ? '/api'
   : 'http://localhost:8000';
