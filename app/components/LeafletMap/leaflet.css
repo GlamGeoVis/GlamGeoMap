@@ -18,3 +18,8 @@
     height: 10px;
     background-color: #0074D9;
 }
+
+.leaflet-div-icon {
+    background: none;
+    border: none;
+}

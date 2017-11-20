@@ -4,11 +4,25 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import styled from 'styled-components';
 import { setTimeRange } from '../../containers/Timeline/actions';
+import { colorForYear, rgbString } from '../../utils/colors';
 
 export default class Timeline extends React.Component {
   componentDidMount() {
-    this.d3 = new D3Timeline(this.props.minYear, this.props.maxYear, this.setSelectionValues);
-    this.d3.zoomOut();
+    const initD3 = () => {
+      const oldD3 = this.d3;
+      this.d3 = new D3Timeline(
+        this.props.minYear,
+        this.props.maxYear,
+        this.setSelectionValues
+      );
+      this.d3.zoomOut();
+      if (oldD3 && oldD3.hasBrushed) {
+        this.d3.setBrush(oldD3.brushRange[0], oldD3.brushRange[1]);
+      }
+    };
+
+    window.addEventListener('resize', initD3);
+    initD3();
   }
 
   componentWillReceiveProps(newProps) {
@@ -33,13 +47,11 @@ export default class Timeline extends React.Component {
   }
 }
 
+
 const TimelineRoot = styled.div`
   & > div#d3 {
     width: 100%;
     margin-bottom: -5px;
-  }
-  & .bar {
-    fill: steelblue;
   }
 `;
 
@@ -52,7 +64,7 @@ Timeline.propTypes = {
   dispatch: PropTypes.func.isRequired,
   minYear: PropTypes.number,
   maxYear: PropTypes.number,
-// eslint-disable-next-line react/no-unused-prop-types
+  // eslint-disable-next-line react/no-unused-prop-types
   years: PropTypes.object,
 };
 
@@ -60,20 +72,22 @@ const marginLeft = 20;
 
 class D3Timeline {
   constructor(startYear, endYear, callback) {
-    this.startYear = startYear;
-    this.endYear = endYear;
-    this.callback = callback;
-    this.hasBrushed = false;
-    this.brushRange = [startYear, endYear];
-    this.width = document.getElementById('d3_timeline').scrollWidth;
-    this.height = 100;
-    // x maps year to pixels
-    this.x = d3.scaleLinear()
+    document.getElementById('d3_timeline').innerHTML = '';
+    this.startYear = startYear;                                       // minimum year for timeline
+    this.endYear = endYear;                                           // maximum year for timeline
+    this.callback = callback;                                         // callback on brush sets range
+    this.hasBrushed = false;                                          // is the brush active?
+    this.brushRange = [startYear, endYear];                           // brush position
+    this.width = document.getElementById('d3_timeline').scrollWidth;  // width of element in pixels
+    this.height = 100;                                                // height of element in pixels
+
+    this.x = d3.scaleLinear()                                         // x maps year to pixels
       .domain([this.startYear, this.endYear])
       .range([marginLeft, this.width]);
     this.currentX = this.x.copy();
-    // for the year bins (maps index to pixels, has bandWidth)
-    this.xBand = d3.scaleBand()
+
+    this.xBand = d3.scaleBand()                                       // for the year bins (maps index to
+                                                                          // pixels (discrete), has bandWidth)
       .domain(d3.range(0, this.endYear - this.startYear))
       .range([marginLeft, this.width])
       .paddingInner(0.1)
@@ -98,10 +112,9 @@ class D3Timeline {
     // maps Y value to height (inverse, large height means small bar)
     const maxY = d3.max(data, (d) => d.value);
     const yScale = d3.scaleLinear().range([this.height, 0]).domain([0, maxY]);
+    // don't put ticks on sub integer values
     const axis = d3.axisLeft(yScale).ticks(maxY > 5 ? 5 : maxY);
     this.yAxis.call(axis);
-
-    // this.setXValues();
 
     this.bars.selectAll('.bar')
       .data(data)
@@ -109,12 +122,12 @@ class D3Timeline {
       .duration(500)
       .attr('height', (d) => this.height - yScale(d.value))
       .attr('y', (d) => yScale(d.value))
-      .attr('fill', '#0ff');
+      .attr('fill', (d) => rgbString(colorForYear(d.year)));
   }
 
   brushended = (self = this) => () => {
-    self.hasBrushed = true;
     if (d3.event.selection) {
+      self.hasBrushed = true;
       const years = d3.event.selection.map(self.currentX.invert);
       if (self.brushRange[0] !== years[0] || self.brushRange[1] !== years[1]) { // changed
         self.brushRange = years.map(Math.round);
@@ -127,6 +140,11 @@ class D3Timeline {
     }
   };
 
+  setBrush = (leftYear, rightYear) => {
+    console.log(this);
+    this.brushElm.call(this.brush.move, [leftYear, rightYear].map(this.currentX));
+  };
+  
   zoomed = (self = this) => () => {
     // maps index to pixels
     const fullXSCale = self.x.copy().domain([0, this.endYear - this.startYear]);
@@ -143,13 +161,13 @@ class D3Timeline {
     self.setXValues();
 
     // update brush, detect if zoomed in past current bounds
-    const minimumYear = self.currentX.invert(marginLeft);
-    const maximumYear = self.currentX.invert(self.width);
     if (self.hasBrushed) {
-      self.brushElm.call(self.brush.move, [
+      const minimumYear = self.currentX.invert(marginLeft);
+      const maximumYear = self.currentX.invert(self.width);
+      self.setBrush(
         self.brushRange[0] < minimumYear ? minimumYear : self.brushRange[0],
         self.brushRange[1] > maximumYear ? maximumYear : self.brushRange[1],
-      ].map(self.currentX));
+      );
     }
   };
 

@@ -1,9 +1,3 @@
-/*
- *
- * Timeline reducer
- *
- */
-
 import {
   SET_TIME_RANGE,
 } from './constants';

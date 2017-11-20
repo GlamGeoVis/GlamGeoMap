@@ -2,13 +2,14 @@
  * Combine all reducers in this file and export the combined reducers.
  */
 
-import { combineReducers } from 'redux-immutable';
+import { combineReducers } from 'redux';
 import { fromJS } from 'immutable';
 import { LOCATION_CHANGE } from 'react-router-redux';
 
-import languageProviderReducer from 'containers/LanguageProvider/reducer';
 import setViewportReducer from './containers/LeafletMap/reducer';
-
+import filterReducer from './containers/LeftSideBar/reducer';
+import dataReducer from './containers/App/reducer';
+import timelineReducer from './containers/Timeline/reducer';
 /*
  * routeReducer
  *
@@ -22,9 +23,6 @@ const routeInitialState = fromJS({
   location: null,
 });
 
-/**
- * Merge route into the global application state
- */
 function routeReducer(state = routeInitialState, action) {
   switch (action.type) {
     /* istanbul ignore next */
@@ -37,14 +35,10 @@ function routeReducer(state = routeInitialState, action) {
   }
 }
 
-/**
- * Creates the main reducer with the dynamically injected ones
- */
-export default function createReducer(injectedReducers) {
-  return combineReducers({
-    route: routeReducer,
-    language: languageProviderReducer,
-    viewport: setViewportReducer,
-    ...injectedReducers,
-  });
-}
+export default () => combineReducers({
+  route: routeReducer,
+  viewport: setViewportReducer,
+  filters: filterReducer,
+  data: dataReducer,
+  timeline: timelineReducer,
+});

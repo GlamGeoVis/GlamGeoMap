@@ -1,19 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map, TileLayer } from 'react-leaflet';
-import leaflet from 'leaflet';
+import DivIcon from 'react-leaflet-div-icon';
 import 'leaflet/dist/leaflet.css';
-import { setViewport } from '../containers/LeafletMap/actions';
+import { setViewport } from '../../containers/LeafletMap/actions';
 import './leaflet.css';
-import CustomMarker from './CustomMarker';
-
-window.L = leaflet;
+import PieChartGlyph from '../PieChartGlyph';
 
 /* eslint-disable react/no-array-index-key */
 
-export default class LeafletMap extends React.Component {
+export default class LeafletMap extends React.PureComponent {
   componentDidMount() {
     this.onViewportChanged();
+  }
+  shouldComponentUpdate(newProps) {
+    return newProps.data !== this.props.data;
   }
 
   onViewportChanged = () => {
@@ -22,9 +23,9 @@ export default class LeafletMap extends React.Component {
     this.props.dispatch(setViewport(bounds._northEast, bounds._southWest));
   };
 
-  invalidateSize() {
+  invalidateSize = () => {
     this.leaflet.invalidateSize();
-  }
+  };
 
   position = [51.505, -0.09];
   zoom = 5;
@@ -46,17 +47,20 @@ export default class LeafletMap extends React.Component {
           attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
         />
-        {this.props.data && this.props.data.map((data, idx) => (
-          <CustomMarker key={idx} position={[data.lat, data.lng]}>
-            <div style={{ backgroundColor: 'red' }}>
-              { data.count }
-            </div>
-          </CustomMarker>
-          ))}
+        {this.props.data && this.props.data.map((data, idx) => {
+          const size = dampen(data.count, 20, 100, this.props.total / 10);
+          return (
+            <DivIcon iconSize={[size, size]} key={idx} position={[data.lat, data.lng]}>
+              <PieChartGlyph count={data.count} data={data} />
+            </DivIcon>
+          );
+        })}
       </Map>
     );
   }
 }
+
+const dampen = (x, min, max, range) => (max / 2) * (1 / (0.5 + Math.exp(-x / range)));
 
 // LeafletMap.defaultProps = {
 //   position: 1,
@@ -66,4 +70,5 @@ LeafletMap.propTypes = {
   style: PropTypes.object,
   dispatch: PropTypes.func,
   data: PropTypes.array,
+  total: PropTypes.number,
 };

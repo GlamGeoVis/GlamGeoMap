@@ -12,20 +12,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { FormControl, ControlLabel, FormGroup, Glyphicon, Panel } from 'react-bootstrap';
+import { Glyphicon } from 'react-bootstrap';
 
 import Timeline from '../containers/Timeline/index';
 import LeafletMap from '../containers/LeafletMap/index';
-
-const LeftSideBarContents = () => (
-  <Panel>
-    <FormGroup>
-      <ControlLabel>Author</ControlLabel>
-      <FormControl type="text" placeholder="Author" />
-    </FormGroup>
-  </Panel>
-);
-
+import LeftSideBar from '../containers/LeftSideBar';
 
 export default class Layout extends React.Component {
   state = {
@@ -41,7 +32,7 @@ export default class Layout extends React.Component {
   toggleBar = (name) => () => {
     this.setState({ bars: { ...this.state.bars, [name]: !this.state.bars[name] } });
     setTimeout(() => {
-      this.leafletMap.invalidateSize();
+      this.leafletMap.wrappedInstance.invalidateSize();
     }, 300);
   };
 
@@ -66,7 +57,7 @@ export default class Layout extends React.Component {
       <Container>
         <TopSection>
           { this.sideBar(
-            <LeftSideBarContents />,
+            <LeftSideBar />,
             <span><Glyphicon glyph="filter" /> Filter</span>,
             'left'
           ) }
@@ -75,7 +66,7 @@ export default class Layout extends React.Component {
             style={{ flex: 1, zIndex: 1 }}
           />
           { this.sideBar(
-            <LeftSideBarContents />,
+            <div>Todo</div>,
             <span><Glyphicon glyph="book" /> Selected works</span>,
             'right'
           ) }
@@ -93,11 +84,9 @@ export default class Layout extends React.Component {
   }
 }
 
-
 const handleWidth = 18;
 const shadowColor = '#666';
 const shadowRadius = '10';
-
 
 const Container = styled.div`
   height: 100%;

@@ -6,10 +6,17 @@ import { SET_VIEWPORT } from '../LeafletMap/constants';
 import { SET_TIME_RANGE } from '../Timeline/constants';
 import { BACKEND_URL } from './constants';
 import { request, requestCompleted, requestError } from './actions';
+import { SET_FILTER } from '../LeftSideBar/constants';
+
+const filterTruthyValues = (obj) => // filters obj, leaves key value pairs with truthy value
+  Object.keys(obj)
+    .filter((key) => obj[key])
+    .reduce((result, key) => ({ ...result, [key]: obj[key] }), {});
 
 const getParametersForRequest = (state) => ({
-  viewport: state.get('viewport'),
-  range: state.get('timeline').range,
+  viewport: state.viewport,
+  range: state.timeline.range,
+  ...filterTruthyValues(state.filters),
 });
 
 const createFetchRequestOptions = (parameters) => ({
@@ -24,7 +31,7 @@ const createFetchRequestOptions = (parameters) => ({
 
 export function* requestData() {
   try {
-    yield call(delay, 100);
+    yield call(delay, 400);
     const parameters = yield select(getParametersForRequest);
     yield put(request(parameters));
     const response = yield fetch(`${BACKEND_URL}/jsonData`, createFetchRequestOptions(parameters));
@@ -45,4 +52,5 @@ export function* requestData() {
 export default function* refresh() {
   yield takeLatest(SET_VIEWPORT, requestData);
   yield takeLatest(SET_TIME_RANGE, requestData);
+  yield takeLatest(SET_FILTER, requestData);
 }
