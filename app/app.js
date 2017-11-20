@@ -22,7 +22,6 @@ import App from 'containers/App';
 // Load the favicon, the manifest.json file
 /* eslint-disable import/no-unresolved, import/extensions */
 import '!file-loader?name=[name].[ext]!./images/favicon.ico';
-import '!file-loader?name=[name].[ext]!./manifest.json';
 /* eslint-enable import/no-unresolved, import/extensions */
 
 import configureStore from './configureStore';

@@ -3,7 +3,6 @@
  */
 
 import { combineReducers } from 'redux';
-import { fromJS } from 'immutable';
 import { LOCATION_CHANGE } from 'react-router-redux';
 
 import setViewportReducer from './containers/LeafletMap/reducer';
@@ -19,15 +18,15 @@ import timelineReducer from './containers/Timeline/reducer';
  */
 
 // Initial routing state
-const routeInitialState = fromJS({
+const routeInitialState = {
   location: null,
-});
+};
 
 function routeReducer(state = routeInitialState, action) {
   switch (action.type) {
     /* istanbul ignore next */
     case LOCATION_CHANGE:
-      return state.merge({
+      return ({
         location: action.payload,
       });
     default:

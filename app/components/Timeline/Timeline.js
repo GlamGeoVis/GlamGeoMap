@@ -141,10 +141,9 @@ class D3Timeline {
   };
 
   setBrush = (leftYear, rightYear) => {
-    console.log(this);
     this.brushElm.call(this.brush.move, [leftYear, rightYear].map(this.currentX));
   };
-  
+
   zoomed = (self = this) => () => {
     // maps index to pixels
     const fullXSCale = self.x.copy().domain([0, this.endYear - this.startYear]);

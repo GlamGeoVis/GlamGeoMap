@@ -194,10 +194,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 10,
-        "branches": 10,
-        "functions": 10,
-        "lines": 10
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
       }
     },
     "moduleDirectories": [
@@ -295,6 +295,7 @@
     "style-loader": "0.18.1",
     "url-loader": "0.5.8",
     "webpack": "3.5.5",
+    "webpack-bundle-analyzer": "^2.9.1",
     "webpack-dev-middleware": "1.11.0",
     "webpack-hot-middleware": "2.18.0"
   }
