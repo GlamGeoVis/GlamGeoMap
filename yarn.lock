@@ -5730,6 +5730,10 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
+ngeohash@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/ngeohash/-/ngeohash-0.6.0.tgz#329713e9e73d1f1a46d92aab0b94adb94533f687"
+
 ngrok@2.2.9:
   version "2.2.9"
   resolved "https://registry.yarnpkg.com/ngrok/-/ngrok-2.2.9.tgz#d455c1ed2f55d3854d6e9ee5a7ec97872afd2c26"

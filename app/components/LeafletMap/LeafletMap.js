@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map, TileLayer } from 'react-leaflet';
-import DivIcon from 'react-leaflet-div-icon';
+import ngeohash from 'ngeohash';
 import 'leaflet/dist/leaflet.css';
+import DivIcon from '../DivIcon';
 import { setViewport } from '../../containers/LeafletMap/actions';
 import './leaflet.css';
 import PieChartGlyph from '../PieChartGlyph';
 import { getClusterDetails } from '../../containers/App/actions';
+// import BooksGlyph from '../BooksGlyph';
 
 /* eslint-disable react/no-array-index-key */
 
@@ -26,7 +28,7 @@ export default class LeafletMap extends React.PureComponent {
 
   onGlyphClick = (id) => {
     this.props.dispatch(getClusterDetails(id));
-  }
+  };
 
   invalidateSize = () => {
     this.leaflet.invalidateSize();
@@ -52,11 +54,11 @@ export default class LeafletMap extends React.PureComponent {
           attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
         />
-        {this.props.data && this.props.data.map((data, idx) => {
+        {this.props.data && (this.props.data).map((data, idx) => {
           const size = dampen(data.count, 20, 100, this.props.total / 10);
           return (
-            <DivIcon iconSize={[size, size]} key={idx} position={[data.lat, data.lng]}>
-              <PieChartGlyph onClick={() => this.onGlyphClick(idx)} id={idx} count={data.count} data={data} />
+            <DivIcon iconSize={[size, size]} key={ngeohash.encode(data.lat, data.lng, 3)} position={[data.lat, data.lng]}>
+              <PieChartGlyph key={idx} onClick={() => this.onGlyphClick(idx)} id={idx} count={data.count} data={data} />
             </DivIcon>
           );
         })}
