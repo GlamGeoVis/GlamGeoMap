@@ -51,7 +51,7 @@ export default class LeafletMap extends React.PureComponent {
           const size = dampen(data.count, 20, 100, this.props.total / 10);
           return (
             <DivIcon iconSize={[size, size]} key={idx} position={[data.lat, data.lng]}>
-              <PieChartGlyph count={data.count} data={data} />
+              <PieChartGlyph id={idx} count={data.count} data={data} />
             </DivIcon>
           );
         })}

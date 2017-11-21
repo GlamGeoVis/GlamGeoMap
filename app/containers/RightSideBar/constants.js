@@ -1,0 +1,1 @@
+export const GET_CLUSTER_DETAILS = 'app/GET_CLUSTER_DETAILS';

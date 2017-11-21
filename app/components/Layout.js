@@ -17,6 +17,7 @@ import { Glyphicon } from 'react-bootstrap';
 import Timeline from '../containers/Timeline/index';
 import LeafletMap from '../containers/LeafletMap/index';
 import LeftSideBar from '../containers/LeftSideBar';
+import RightSideBar from '../containers/RightSideBar';
 
 export default class Layout extends React.Component {
   state = {
@@ -66,7 +67,7 @@ export default class Layout extends React.Component {
             style={{ flex: 1, zIndex: 1 }}
           />
           { this.sideBar(
-            <div>Todo</div>,
+            <RightSideBar />,
             <span><Glyphicon glyph="book" /> Selected works</span>,
             'right'
           ) }
