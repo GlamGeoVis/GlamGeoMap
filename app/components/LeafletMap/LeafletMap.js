@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { setViewport } from '../../containers/LeafletMap/actions';
 import './leaflet.css';
 import PieChartGlyph from '../PieChartGlyph';
+import { getClusterDetails } from '../../containers/App/actions';
 
 /* eslint-disable react/no-array-index-key */
 
@@ -22,6 +23,10 @@ export default class LeafletMap extends React.PureComponent {
     // eslint-disable-next-line
     this.props.dispatch(setViewport(bounds._northEast, bounds._southWest));
   };
+
+  onGlyphClick = (id) => {
+    this.props.dispatch(getClusterDetails(id));
+  }
 
   invalidateSize = () => {
     this.leaflet.invalidateSize();
@@ -51,7 +56,7 @@ export default class LeafletMap extends React.PureComponent {
           const size = dampen(data.count, 20, 100, this.props.total / 10);
           return (
             <DivIcon iconSize={[size, size]} key={idx} position={[data.lat, data.lng]}>
-              <PieChartGlyph id={idx} count={data.count} data={data} />
+              <PieChartGlyph onClick={() => this.onGlyphClick(idx)} id={idx} count={data.count} data={data} />
             </DivIcon>
           );
         })}

@@ -1,4 +1,5 @@
 import {
+  GET_CLUSTER_DETAILS_COMPLETED,
   REQUEST_COMPLETED,
 } from './constants';
 
@@ -8,7 +9,7 @@ const initialState = {
   total: 0,
 };
 
-function dataReducer(state = initialState, action) {
+export function dataReducer(state = initialState, action) {
   switch (action.type) {
     case REQUEST_COMPLETED:
       return {
@@ -21,4 +22,11 @@ function dataReducer(state = initialState, action) {
   }
 }
 
-export default dataReducer;
+export function clusterDetailsReducer(state = [], action) {
+  switch (action.type) {
+    case GET_CLUSTER_DETAILS_COMPLETED:
+      return action.data;
+    default:
+      return state;
+  }
+}

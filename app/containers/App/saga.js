@@ -1,12 +1,16 @@
 import { delay } from 'redux-saga';
-import { put, call, takeLatest, select } from 'redux-saga/effects';
+import { put, call, fork, takeLatest, select } from 'redux-saga/effects';
 import 'whatwg-fetch';
 
 import { SET_VIEWPORT } from '../LeafletMap/constants';
 import { SET_TIME_RANGE } from '../Timeline/constants';
-import { BACKEND_URL } from './constants';
-import { request, requestCompleted, requestError } from './actions';
+import { BACKEND_URL, GET_CLUSTER_DETAILS } from './constants';
+import {
+  getClusterDetailsCompleted, getClusterDetailsError, request, requestCompleted,
+  requestError,
+} from './actions';
 import { SET_FILTER } from '../LeftSideBar/constants';
+import { toggleBar } from '../Layout/actions';
 
 const filterTruthyValues = (obj) => // filters obj, leaves key value pairs with truthy value
   Object.keys(obj)
@@ -49,8 +53,41 @@ export function* requestData() {
 /**
  * Root saga manages watcher lifecycle
  */
-export default function* refresh() {
+export function* refresh() {
   yield takeLatest(SET_VIEWPORT, requestData);
   yield takeLatest(SET_TIME_RANGE, requestData);
   yield takeLatest(SET_FILTER, requestData);
+}
+
+export function* requestClusterDetailsData(action) {
+  try {
+    yield call(delay, 400);
+    const rightBarExpanded = yield select((state) => state.layout.bars.right);
+    if (!rightBarExpanded) {
+      yield put(toggleBar('right'));
+    }
+    const parameters = yield select(getParametersForRequest);
+    parameters.id = action.id;
+
+    const response = yield fetch(`${BACKEND_URL}/clusterDetails`, createFetchRequestOptions(parameters));
+    if (response.status !== 200) {
+      throw Error(`response status code was ${response.status}`);
+    }
+    const dataJSON = yield response.json();
+    yield put(getClusterDetailsCompleted(dataJSON));
+  } catch (err) {
+    console.log('error', err);
+    yield put(getClusterDetailsError(err));
+  }
+}
+
+export function* clusterDetails() {
+  yield takeLatest(GET_CLUSTER_DETAILS, requestClusterDetailsData);
+}
+
+export default function* saga() {
+  yield [
+    fork(refresh),
+    fork(clusterDetails),
+  ];
 }

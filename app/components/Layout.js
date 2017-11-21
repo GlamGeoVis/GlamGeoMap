@@ -31,7 +31,7 @@ export default class Layout extends React.Component {
 
   sideBar = (contents, handleContents, position = 'left') => (
     <SideBarContainer active={this.props.layout.bars[position]} >
-      <div style={{ overflow: 'hidden' }}>
+      <div style={{ height: '100%', overflow: 'hidden' }}>
         {contents}
       </div>
       <SideHandle
@@ -95,7 +95,7 @@ const Container = styled.div`
 `;
 
 const TopSection = styled.div`
-  flex-grow: 1;
+  height: 100%;
   display: flex;
 `;
 
@@ -110,7 +110,7 @@ const SideBarContainer = Bar.extend`
 `;
 
 const BottomBarContainer = Bar.extend`
-  height: ${(props) => props.active ? 130 : 0}px;
+  height: ${(props) => props.active ? 140 : 0}px;
   display: flex;
 `;
 

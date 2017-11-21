@@ -7,7 +7,7 @@ import { LOCATION_CHANGE } from 'react-router-redux';
 
 import setViewportReducer from './containers/LeafletMap/reducer';
 import filterReducer from './containers/LeftSideBar/reducer';
-import dataReducer from './containers/App/reducer';
+import { dataReducer, clusterDetailsReducer } from './containers/App/reducer';
 import timelineReducer from './containers/Timeline/reducer';
 import layoutReducer from './containers/Layout/reducer';
 /*
@@ -40,6 +40,7 @@ export default () => combineReducers({
   viewport: setViewportReducer,
   filters: filterReducer,
   data: dataReducer,
+  clusterDetails: clusterDetailsReducer,
   timeline: timelineReducer,
   layout: layoutReducer,
 });

@@ -64,10 +64,12 @@ export default class PieChartGlyph extends React.Component {
 
     return (
       <div
+        role="button"
+        tabIndex={this.props.id}
         style={{ width: '100%', height: '100%', opacity: this.state.showTooltip ? 1 : 0.7 }}
         onMouseEnter={this.showTooltip()}
         onMouseLeave={this.showTooltip(false)}
-        onClick={() => console.log(this.props.id)}
+        onClick={() => this.props.onClick && this.props.onClick(this.props.id)}
       >
         { this.tooltip() }
         <canvas
@@ -83,4 +85,5 @@ export default class PieChartGlyph extends React.Component {
 PieChartGlyph.propTypes = {
   data: PropTypes.object,
   id: PropTypes.number,
+  onClick: PropTypes.func,
 };

@@ -12,13 +12,20 @@ export default class RightSideBar extends React.Component {
 
   render() {
     return (
-      <Panel>
-        bla123123
+      <Panel style={{ overflow: 'scroll', height: '100%' }}>
+        <ul>
+          {this.props.data.map((book) => (
+            <li>
+              {book.title}
+            </li>
+          ))}
+        </ul>
       </Panel>
     );
   }
 }
 
 RightSideBar.propTypes = {
-  dispatch: PropTypes.func,
+  // dispatch: PropTypes.func,
+  data: PropTypes.array,
 };

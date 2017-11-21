@@ -19,7 +19,7 @@ export default class LeftSideBar extends React.Component {
   render() {
     return (
       <Panel>
-        <FormGroup>
+        <FormGroup style={{ display: 'none' }}>
           <ControlLabel>Author</ControlLabel>
           <FormControl onKeyPress={this.onEnterApply} inputRef={(elm) => { this.authorField = elm; }} type="text" placeholder="Author" />
         </FormGroup>
