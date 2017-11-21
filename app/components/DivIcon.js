@@ -96,16 +96,11 @@ export default class Divicon extends MapLayer {
     this.renderComponent();
   }
 
-  componentWillReceiveProps() {
-    console.log('divicon will receive props');
-  }
-
   shouldComponentUpdate() {
     return false;
   }
 
   componentDidUpdate(fromProps) {
-    console.log('divicon did update');
     this.renderComponent();
     this.updateLeafletElement(fromProps, this.props);
   }

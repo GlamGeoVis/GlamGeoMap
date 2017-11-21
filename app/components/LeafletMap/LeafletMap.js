@@ -13,6 +13,10 @@ import { getClusterDetails } from '../../containers/App/actions';
 /* eslint-disable react/no-array-index-key */
 
 export default class LeafletMap extends React.PureComponent {
+  constructor() {
+    super();
+    this.state = { zoom: 5 };
+  }
   componentDidMount() {
     this.onViewportChanged();
   }
@@ -21,6 +25,7 @@ export default class LeafletMap extends React.PureComponent {
   }
 
   onViewportChanged = () => {
+    this.setState({ zoom: this.leaflet.getZoom() });
     const bounds = this.leaflet.getBounds();
     // eslint-disable-next-line
     this.props.dispatch(setViewport(bounds._northEast, bounds._southWest));
@@ -35,7 +40,6 @@ export default class LeafletMap extends React.PureComponent {
   };
 
   position = [51.505, -0.09];
-  zoom = 5;
 
   render() {
     return (
@@ -46,7 +50,7 @@ export default class LeafletMap extends React.PureComponent {
           }
         }}
         center={this.position}
-        zoom={this.zoom}
+        zoom={this.state.zoom}
         style={{ ...this.props.style }}
         onViewportChanged={this.onViewportChanged}
       >
@@ -57,7 +61,7 @@ export default class LeafletMap extends React.PureComponent {
         {this.props.data && (this.props.data).map((data, idx) => {
           const size = dampen(data.count, 20, 100, this.props.total / 10);
           return (
-            <DivIcon iconSize={[size, size]} key={ngeohash.encode(data.lat, data.lng, 3)} position={[data.lat, data.lng]}>
+            <DivIcon iconSize={[size, size]} key={this.state.zoom + ngeohash.encode(data.lat, data.lng, 3)} position={[data.lat, data.lng]}>
               <PieChartGlyph key={idx} onClick={() => this.onGlyphClick(idx)} id={idx} count={data.count} data={data} />
             </DivIcon>
           );
