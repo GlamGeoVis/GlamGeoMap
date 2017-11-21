@@ -8,6 +8,7 @@ import { setViewport } from '../../containers/LeafletMap/actions';
 import './leaflet.css';
 import PieChartGlyph from '../PieChartGlyph';
 import { getClusterDetails } from '../../containers/App/actions';
+import BooksGlyph from '../BooksGlyph';
 // import BooksGlyph from '../BooksGlyph';
 
 /* eslint-disable react/no-array-index-key */
@@ -26,6 +27,7 @@ export default class LeafletMap extends React.PureComponent {
 
   onViewportChanged = () => {
     this.setState({ zoom: this.leaflet.getZoom() });
+    console.log('zoom', this.leaflet.getZoom());
     const bounds = this.leaflet.getBounds();
     // eslint-disable-next-line
     this.props.dispatch(setViewport(bounds._northEast, bounds._southWest));
@@ -63,7 +65,7 @@ export default class LeafletMap extends React.PureComponent {
           const key = this.state.zoom + this.props.filterHash + ngeohash.encode(data.lat, data.lng, 4);
           return (
             <DivIcon iconSize={[size, size]} key={key} position={[data.lat, data.lng]}>
-              <PieChartGlyph key={idx} onClick={() => this.onGlyphClick(idx)} id={idx} count={data.count} data={data} />
+              <BooksGlyph key={idx} size={size} onClick={() => this.onGlyphClick(idx)} id={idx} count={data.count} data={data} />
             </DivIcon>
           );
         })}

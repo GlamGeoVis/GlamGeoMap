@@ -6,4 +6,6 @@ export const colorForYear = (year) => {
   return [129, 15, 124];
 };
 
+export const buckets = [1700, 1775, 1820, 1870, 1920];
+
 export const rgbString = (colorArray) => `rgb(${colorArray[0]},${colorArray[1]},${colorArray[2]})`;

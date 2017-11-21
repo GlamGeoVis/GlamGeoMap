@@ -36,4 +36,8 @@ injectGlobal`
   ul {
     padding-left: 10px;
   }
+  
+  svg {
+    overflow: visible !important;
+  }
 `;
