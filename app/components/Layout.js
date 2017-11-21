@@ -1,18 +1,10 @@
-/*
- * HomePage
- *
- * This is the first thing users see of our App, at the '/' route
- *
- * NOTE: while this component should technically be a stateless functional
- * component (SFC), hot reloading does not currently support SFCs. If hot
- * reloading is not a necessity for you then you can refactor it and remove
- * the linting exception.
- */
-
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Glyphicon } from 'react-bootstrap';
+
+import { toggleBar } from '../containers/Layout/actions';
 
 import Timeline from '../containers/Timeline/index';
 import LeafletMap from '../containers/LeafletMap/index';
@@ -31,14 +23,14 @@ export default class Layout extends React.Component {
   leafletMap = null;
 
   toggleBar = (name) => () => {
-    this.setState({ bars: { ...this.state.bars, [name]: !this.state.bars[name] } });
+    this.props.dispatch(toggleBar(name));
     setTimeout(() => {
       this.leafletMap.wrappedInstance.invalidateSize();
     }, 300);
   };
 
   sideBar = (contents, handleContents, position = 'left') => (
-    <SideBarContainer active={this.state.bars[position]} >
+    <SideBarContainer active={this.props.layout.bars[position]} >
       <div style={{ overflow: 'hidden' }}>
         {contents}
       </div>
@@ -72,7 +64,7 @@ export default class Layout extends React.Component {
             'right'
           ) }
         </TopSection>
-        <BottomBarContainer active={this.state.bars.bottom}>
+        <BottomBarContainer active={this.props.layout.bars.bottom}>
           <div style={{ overflow: 'hidden', width: '100%' }}>
             <Timeline minYear={1650} maxYear={1950} />
           </div>
@@ -84,6 +76,11 @@ export default class Layout extends React.Component {
     );
   }
 }
+
+Layout.propTypes = {
+  layout: PropTypes.object,
+  dispatch: PropTypes.func,
+};
 
 const handleWidth = 18;
 const shadowColor = '#666';

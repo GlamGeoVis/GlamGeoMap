@@ -9,6 +9,7 @@ import setViewportReducer from './containers/LeafletMap/reducer';
 import filterReducer from './containers/LeftSideBar/reducer';
 import dataReducer from './containers/App/reducer';
 import timelineReducer from './containers/Timeline/reducer';
+import layoutReducer from './containers/Layout/reducer';
 /*
  * routeReducer
  *
@@ -40,4 +41,5 @@ export default () => combineReducers({
   filters: filterReducer,
   data: dataReducer,
   timeline: timelineReducer,
+  layout: layoutReducer,
 });
