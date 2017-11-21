@@ -225,6 +225,7 @@
     "hoist-non-react-statics": "2.1.1",
     "ip": "1.1.5",
     "leaflet": "^1.2.0",
+    "md5": "^2.2.1",
     "minimist": "1.2.0",
     "ngeohash": "^0.6.0",
     "prop-types": "15.5.10",

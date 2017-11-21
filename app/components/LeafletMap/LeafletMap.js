@@ -60,8 +60,9 @@ export default class LeafletMap extends React.PureComponent {
         />
         {this.props.data && (this.props.data).map((data, idx) => {
           const size = dampen(data.count, 20, 100, this.props.total / 10);
+          const key = this.state.zoom + this.props.filterHash + ngeohash.encode(data.lat, data.lng, 4);
           return (
-            <DivIcon iconSize={[size, size]} key={this.state.zoom + ngeohash.encode(data.lat, data.lng, 3)} position={[data.lat, data.lng]}>
+            <DivIcon iconSize={[size, size]} key={key} position={[data.lat, data.lng]}>
               <PieChartGlyph key={idx} onClick={() => this.onGlyphClick(idx)} id={idx} count={data.count} data={data} />
             </DivIcon>
           );
@@ -82,4 +83,5 @@ LeafletMap.propTypes = {
   dispatch: PropTypes.func,
   data: PropTypes.array,
   total: PropTypes.number,
+  filterHash: PropTypes.string,
 };
