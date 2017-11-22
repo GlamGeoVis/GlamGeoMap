@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import DivIcon from '../DivIcon';
 import { setViewport } from '../../containers/LeafletMap/actions';
 import './leaflet.css';
-import PieChartGlyph from '../PieChartGlyph';
+// import PieChartGlyph from '../PieChartGlyph';
 import { getClusterDetails } from '../../containers/App/actions';
 import BooksGlyph from '../BooksGlyph';
 // import BooksGlyph from '../BooksGlyph';

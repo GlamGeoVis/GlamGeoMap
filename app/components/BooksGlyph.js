@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { buckets, colorForYear, rgbString } from '../utils/colors';
 
 export default class BooksGlyph extends React.Component {
@@ -44,12 +45,17 @@ export default class BooksGlyph extends React.Component {
 
     return (
       <div style={{ border: '2px solid black', borderRadius: `${this.props.size / 5}px`, overflow: 'hidden' }}>
-      <svg viewBox="0,0,1,1" style={{width: '100%', height: '100%'}}>
-        <g>
-          { rects }
-        </g>
-      </svg>
+        <svg viewBox="0,0,1,1" style={{ width: '100%', height: '100%' }}>
+          <g>
+            { rects }
+          </g>
+        </svg>
       </div>
     );
   }
 }
+
+BooksGlyph.propTypes = {
+  data: PropTypes.object,
+  size: PropTypes.number,
+};
