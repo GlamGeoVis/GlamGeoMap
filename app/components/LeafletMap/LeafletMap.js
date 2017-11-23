@@ -17,6 +17,18 @@ import './leaflet.css';
 
 /* eslint-disable react/no-array-index-key */
 
+
+const dummyData = {
+  count: 22,
+  years: {
+    1750: 2,
+    1800: 10,
+    1850: 8,
+    1900: 2,
+  },
+};
+
+
 export default class LeafletMap extends React.PureComponent {
   constructor() {
     super();
@@ -118,16 +130,6 @@ const TopRight = styled.div`
   right: 50px;
   z-index: 1000;
 `;
-
-const dummyData = {
-  count: 22,
-  years: {
-    1750: 2,
-    1800: 10,
-    1850: 8,
-    1900: 2,
-  },
-};
 
 const GlyphMenuContainer = styled.div`
   > div {
