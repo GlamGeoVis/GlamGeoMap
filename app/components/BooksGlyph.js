@@ -12,6 +12,7 @@ export default class BooksGlyph extends React.Component {
   });
 
   render() {
+    if (!this.props.data) { return null; }
     this.booksPerSide = Math.ceil(Math.sqrt(this.props.data.count));
     this.bookSize = 1 / this.booksPerSide;
     const nRest = (this.booksPerSide * this.booksPerSide) - this.props.data.count;
