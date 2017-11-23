@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { buckets, colorForYear, rgbString } from '../utils/colors';
 
 export default class BooksGlyph extends React.Component {
@@ -32,25 +33,25 @@ export default class BooksGlyph extends React.Component {
         }
         rects.push(
           <rect
-            x={rect.x * this.bookSize}
-            y={rect.y * this.bookSize}
-            width={rect.width * this.bookSize}
-            height={rect.height * this.bookSize}
+            x={rect.x}
+            y={rect.y}
+            width={rect.width}
+            height={rect.height}
             fill={colors[i]}
             stroke={colors[i]}
-            strokeWidth="0.01"
+            strokeWidth="0.2"
           />);
       }
     }
 
     return (
-      <div style={{ border: '2px solid black', borderRadius: `${this.props.size / 5}px`, overflow: 'hidden' }}>
-        <svg viewBox="0,0,1,1" style={{ width: '100%', height: '100%' }}>
+      <Glyph size={this.props.size}>
+        <svg viewBox={`0,0,${this.booksPerSide},${this.booksPerSide}`} style={{ width: '100%', height: '100%' }}>
           <g>
             { rects }
           </g>
         </svg>
-      </div>
+      </Glyph>
     );
   }
 }
@@ -59,3 +60,12 @@ BooksGlyph.propTypes = {
   data: PropTypes.object,
   size: PropTypes.number,
 };
+
+const Glyph = styled.div`
+  width: 100%;
+  height: 100%;
+  border: 2px solid black;
+  border-radius: ${(props) => props.size / 5}px;
+  box-shadow: ${(props) => ((s) => `${s / 10}px ${s / 10}px ${s / 2}px black`)(props.size)};
+  overflow: hidden;
+`;

@@ -41,7 +41,7 @@ export default class PieChartGlyph extends React.Component {
     }
   }
 
-  showTooltip = (show = true) => () => this.setState({ showTooltip: show });
+  showTooltip = (show = true) => () => !this.props.noTooltip && this.setState({ showTooltip: show });
 
   tooltip = () => {
     if (!this.state.showTooltip) {
@@ -76,6 +76,8 @@ export default class PieChartGlyph extends React.Component {
           ref={(canvas) => { this.canvas = canvas; }}
           id="myChart"
           style={{ width: '100%', height: '100%' }}
+          width={this.props.size || 'auto'}
+          height={this.props.size || 'auto'}
         />
       </div>
     );
@@ -85,5 +87,7 @@ export default class PieChartGlyph extends React.Component {
 PieChartGlyph.propTypes = {
   data: PropTypes.object,
   id: PropTypes.number,
+  size: PropTypes.number,
   onClick: PropTypes.func,
+  noTooltip: PropTypes.bool,
 };

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Glyphicon } from 'react-bootstrap';
 
-import { toggleBar } from '../containers/Layout/actions';
+import { toggleBar as toggleBarAction } from '../containers/Layout/actions';
 
 import Timeline from '../containers/Timeline/index';
 import LeafletMap from '../containers/LeafletMap/index';
@@ -23,7 +23,7 @@ export default class Layout extends React.Component {
   leafletMap = null;
 
   toggleBar = (name) => () => {
-    this.props.dispatch(toggleBar(name));
+    this.props.dispatch(toggleBarAction(name));
     setTimeout(() => {
       this.leafletMap.wrappedInstance.invalidateSize();
     }, 300);
@@ -106,7 +106,7 @@ const Bar = styled.div`
 `;
 
 const SideBarContainer = Bar.extend`
-  width: ${(props) => props.active ? 200 : 0}px;
+  width: ${(props) => props.active ? 300 : 0}px;
 `;
 
 const BottomBarContainer = Bar.extend`
