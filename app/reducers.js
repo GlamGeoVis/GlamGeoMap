@@ -10,22 +10,13 @@ import filterReducer from './containers/LeftSideBar/reducer';
 import { dataReducer, clusterDetailsReducer } from './containers/App/reducer';
 import timelineReducer from './containers/Timeline/reducer';
 import layoutReducer from './containers/Layout/reducer';
-/*
- * routeReducer
- *
- * The reducer merges route location changes into our immutable state.
- * The change is necessitated by moving to react-router-redux@4
- *
- */
 
-// Initial routing state
 const routeInitialState = {
   location: null,
 };
 
 function routeReducer(state = routeInitialState, action) {
   switch (action.type) {
-    /* istanbul ignore next */
     case LOCATION_CHANGE:
       return ({
         location: action.payload,

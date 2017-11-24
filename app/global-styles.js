@@ -17,16 +17,10 @@ injectGlobal`
   }
 
   #app {
-    background-color: #fafafa;
     height: 100%;
     width: 100%;
   }
   
-  #app > div {
-    height: 100%;
-    width: 100%;
-  }
-
   p,
   label {
     font-family: Georgia, Times, 'Times New Roman', serif;

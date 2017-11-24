@@ -20,3 +20,12 @@ This project was bootstrapped using [react-boilerplate](https://github.com/react
 
 ## Production build
 * `npm build`
+
+## Structure
+`internals` and `server` contain some React Boilerplate stuff, most notably Webpack settings etc.
+
+`app` - application code
+
+`components` - React components
+
+`containers` - Interfaces React Components and Redux store, has `connectors`, `action consts` & `action creators`, `reducers`, `sagas`.

@@ -1,22 +1,6 @@
 .leaflet-top.leaflet-left {
+    /* Move this away from the sideBar handle */
     left: 15px;
-}
-
-.rc-slider .rc-slider-handle {
-    background-color: #555;
-    border-color: black;
-    width: 28px;
-    height: 28px;
-    margin-top: -10px;
-}
-
-.rc-slider .rc-slider-rail {
-    height: 10px;
-}
-
-.rc-slider .rc-slider-track {
-    height: 10px;
-    background-color: #0074D9;
 }
 
 .leaflet-div-icon {
