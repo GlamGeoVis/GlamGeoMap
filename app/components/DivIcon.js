@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /*
+Original:
 https://github.com/jgimbel/react-leaflet-div-icon
 Copyright (c) 2016, Joel
 
@@ -106,6 +107,7 @@ export default class Divicon extends MapLayer {
   }
 
   componentWillUnmount() {
+    super.componentWillUnmount();
     if (this.container) {
       unmountComponentAtNode(this.container);
     }
@@ -126,7 +128,7 @@ export default class Divicon extends MapLayer {
         this.container,
       );
     }
-  }
+  };
 
   render() {
     return null;

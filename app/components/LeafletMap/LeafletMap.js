@@ -59,7 +59,7 @@ export default class LeafletMap extends React.PureComponent {
   };
   glyphMenu = () => (
     <GlyphMenuContainer>
-      <DropdownButton bsStyle="primary" title="Glyph type" pullRight>
+      <DropdownButton id="glyphSelector" bsStyle="primary" title="Glyph type" pullRight>
         <GlyphMenuItem onClick={this.setGlyphType('piechart')}>
           <div><PieChartGlyph data={this.iconData} size={18} noTooltip /></div>
           Pie chart (chart.js)
@@ -96,7 +96,7 @@ export default class LeafletMap extends React.PureComponent {
             const key = this.state.glyph + this.state.zoom + this.props.filterHash + ngeohash.encode(data.lat, data.lng, 4);
             return (
               <DivIcon iconSize={[size, size]} key={key} position={[data.lat, data.lng]}>
-                <Glyph key={idx} size={size} onClick={() => this.onGlyphClick(idx)} id={idx} data={data} />
+                <Glyph size={size} onClick={() => this.onGlyphClick(idx)} id={idx} data={data} />
               </DivIcon>
             );
           })}

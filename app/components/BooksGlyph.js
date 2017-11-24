@@ -34,6 +34,7 @@ export default class BooksGlyph extends React.Component {
         }
         rects.push(
           <rect
+            key={rects.length}
             x={rect.x}
             y={rect.y}
             width={rect.width}
@@ -69,4 +70,5 @@ const Glyph = styled.div`
   border-radius: ${(props) => props.size / 5}px;
   box-shadow: ${(props) => ((s) => `${s / 10}px ${s / 10}px ${s / 2}px black`)(props.size)};
   overflow: hidden;
+  opacity: .6;
 `;

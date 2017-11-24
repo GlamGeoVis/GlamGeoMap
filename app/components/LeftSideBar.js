@@ -28,7 +28,7 @@ export default class LeftSideBar extends React.Component {
           <FormControl onKeyPress={this.onEnterApply} inputRef={(elm) => { this.titleField = elm; }} type="text" placeholder="Title" />
         </FormGroup>
         <FormGroup>
-          <Button onClick={this.setFilters} bsStyle="primary" float="right">Search</Button>
+          <Button onClick={this.setFilters} bsStyle="primary">Search</Button>
         </FormGroup>
       </Panel>
     );

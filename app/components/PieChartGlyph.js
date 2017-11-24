@@ -50,7 +50,7 @@ export default class PieChartGlyph extends React.Component {
     return (
       <div style={{ overflow: 'visible', position: 'absolute', bottom: '80%', backgroundColor: 'rgba(255,255,255,.9)' }}>
         {Object.keys(this.props.data.years).map((year, idx) => (
-          <div style={{ whiteSpace: 'nowrap', fontWeight: this.state.selectedPart === idx ? 'bold' : 'normal' }}>
+          <div key={year} style={{ whiteSpace: 'nowrap', fontWeight: this.state.selectedPart === idx ? 'bold' : 'normal' }}>
             <div style={{ height: '10px', width: '10px', backgroundColor: rgbString(colorForYear(year)), display: 'inline-block' }} />
             &nbsp;{year}: {this.props.data.years[year]}
           </div>
