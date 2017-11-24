@@ -17,7 +17,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 import React, { Component } from 'react';
-import { render } from 'react-dom';
+import { render, unmountComponentAtNode } from 'react-dom';
 import { DivIcon, marker } from 'leaflet';
 import { MapLayer } from 'react-leaflet';
 import PropTypes from 'prop-types';
@@ -105,19 +105,25 @@ export default class Divicon extends MapLayer {
     this.updateLeafletElement(fromProps, this.props);
   }
 
+  componentWillUnmount() {
+    if (this.container) {
+      unmountComponentAtNode(this.container);
+    }
+  }
+
   renderComponent = () => {
     const ContextProvider = createContextProvider({ ...this.context, ...this.getChildContext() });
     // eslint-disable-next-line no-underscore-dangle
-    const container = this.leafletElement._icon;
+    this.container = this.leafletElement._icon;
     const component = (
       <ContextProvider>
         {this.props.children}
       </ContextProvider>
     );
-    if (container) {
+    if (this.container) {
       render(
         component,
-        container,
+        this.container,
       );
     }
   }

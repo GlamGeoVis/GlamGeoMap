@@ -17,18 +17,6 @@ import './leaflet.css';
 
 /* eslint-disable react/no-array-index-key */
 
-
-const dummyData = {
-  count: 22,
-  years: {
-    1750: 2,
-    1800: 10,
-    1850: 8,
-    1900: 2,
-  },
-};
-
-
 export default class LeafletMap extends React.PureComponent {
   constructor() {
     super();
@@ -60,16 +48,24 @@ export default class LeafletMap extends React.PureComponent {
   };
 
   initialPosition = [51.505, -0.09];
-
+  iconData = {
+    count: 22,
+    years: {
+      1750: 2,
+      1800: 10,
+      1850: 8,
+      1900: 2,
+    },
+  };
   glyphMenu = () => (
     <GlyphMenuContainer>
       <DropdownButton bsStyle="primary" title="Glyph type" pullRight>
         <GlyphMenuItem onClick={this.setGlyphType('piechart')}>
-          <div><PieChartGlyph data={dummyData} size={18} noTooltip /></div>
+          <div><PieChartGlyph data={this.iconData} size={18} noTooltip /></div>
           Pie chart (chart.js)
         </GlyphMenuItem>
         <GlyphMenuItem onClick={this.setGlyphType('glam')}>
-          <div><BooksGlyph data={dummyData} size={18} noTooltip /></div>
+          <div><BooksGlyph data={this.iconData} size={18} noTooltip /></div>
           GLAM glyph
         </GlyphMenuItem>
       </DropdownButton>
