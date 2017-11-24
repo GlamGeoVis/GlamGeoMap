@@ -47,13 +47,13 @@ export default class BooksGlyph extends React.Component {
     }
 
     return (
-      <Glyph size={this.props.size}>
+      <GlyphContainer size={this.props.size}>
         <svg viewBox={`0,0,${this.booksPerSide},${this.booksPerSide}`} style={{ width: '100%', height: '100%' }}>
           <g>
             { rects }
           </g>
         </svg>
-      </Glyph>
+      </GlyphContainer>
     );
   }
 }
@@ -63,12 +63,12 @@ BooksGlyph.propTypes = {
   size: PropTypes.number,
 };
 
-const Glyph = styled.div`
+const GlyphContainer = styled.div`
   width: 100%;
   height: 100%;
   border: 2px solid black;
   border-radius: ${(props) => props.size / 5}px;
-  box-shadow: ${(props) => ((s) => `${s / 10}px ${s / 10}px ${s / 2}px black`)(props.size)};
+  box-shadow: ${(props) => `${props.size / 10}px ${props.size / 10}px ${props.size / 2}px black`};
   overflow: hidden;
   opacity: .6;
 `;

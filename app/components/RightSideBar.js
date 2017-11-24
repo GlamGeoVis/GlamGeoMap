@@ -60,6 +60,6 @@ const StyledReactTable = styled(ReactTable)`
     background-color: #F0F0F6;
     border-right: 2px solid black !important;
     border-bottom: 2px solid black !important;
-    white
+    white-space: normal;
   }
 `;

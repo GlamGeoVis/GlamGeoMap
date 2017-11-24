@@ -20,20 +20,21 @@ export default class Layout extends React.Component {
     },
   };
 
+  invalidateSizeWhenBarIsToggled = false;
   leafletMap = null;
 
   toggleBar = (name) => () => {
     this.props.dispatch(toggleBarAction(name));
-    setTimeout(() => {
-      this.leafletMap.wrappedInstance.invalidateSize();
-    }, 300);
+    if (this.invalidateSizeWhenBarIsToggled) {
+      setTimeout(() => {
+        this.leafletMap.wrappedInstance.invalidateSize();
+      }, 300);
+    }
   };
 
   sideBar = (contents, handleContents, position = 'left') => (
     <SideBarContainer active={this.props.layout.bars[position]} >
-      <div style={{ height: '100%', overflow: 'hidden' }}>
-        {contents}
-      </div>
+      <div className="sideBarContents">{contents}</div>
       <SideHandle
         position={position}
         onClick={this.toggleBar(position)}
@@ -65,7 +66,7 @@ export default class Layout extends React.Component {
           ) }
         </TopSection>
         <BottomBarContainer active={this.props.layout.bars.bottom}>
-          <div style={{ overflow: 'hidden', width: '100%' }}>
+          <div className="bottomBarContents">
             <Timeline minYear={1650} maxYear={1950} />
           </div>
           <BottomHandle onClick={this.toggleBar('bottom')}>
@@ -91,12 +92,14 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  position: relative;
   overflow: hidden;
 `;
 
 const TopSection = styled.div`
-  height: 100%;
+  flex: 1;
   display: flex;
+  overflow-y: auto;
 `;
 
 const Bar = styled.div`
@@ -107,11 +110,19 @@ const Bar = styled.div`
 
 const SideBarContainer = Bar.extend`
   width: ${(props) => props.active ? 300 : 0}px;
+  >div {
+    overflow: hidden;
+    height: 100%;
+  }
 `;
 
 const BottomBarContainer = Bar.extend`
   height: ${(props) => props.active ? 140 : 0}px;
   display: flex;
+  > div:first-child {
+    overflow: hidden;
+    width: 100%;
+  }
 `;
 
 const Handle = styled.div`

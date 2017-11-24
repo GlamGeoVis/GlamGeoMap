@@ -1,6 +1,7 @@
 import React from 'react';
 import Chart from 'chart.js';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
 import { colorForYear, rgbString } from '../utils/colors';
 function formatData(data) {
@@ -33,6 +34,7 @@ export default class PieChartGlyph extends React.Component {
           tooltips: {
             enabled: false,
             custom: (event) => {
+              // event.afterBody is only set when mouseOver, not set on mouseLeave
               this.setState({ selectedPart: !event.afterBody ? null : event.dataPoints[0].index });
             },
           },
@@ -41,32 +43,31 @@ export default class PieChartGlyph extends React.Component {
     }
   }
 
-  showTooltip = (show = true) => () => !this.props.noTooltip && this.setState({ showTooltip: show });
-
   tooltip = () => {
     if (!this.state.showTooltip) {
       return null;
     }
     return (
-      <div style={{ overflow: 'visible', position: 'absolute', bottom: '80%', backgroundColor: 'rgba(255,255,255,.9)' }}>
+      <TooltipContainer>
         {Object.keys(this.props.data.years).map((year, idx) => (
-          <div key={year} style={{ whiteSpace: 'nowrap', fontWeight: this.state.selectedPart === idx ? 'bold' : 'normal' }}>
-            <div style={{ height: '10px', width: '10px', backgroundColor: rgbString(colorForYear(year)), display: 'inline-block' }} />
-            &nbsp;{year}: {this.props.data.years[year]}
-          </div>
+          <TooltipYear key={year} active={this.state.selectedPart === idx} color={rgbString(colorForYear(year))}>
+            <span>{year}: {this.props.data.years[year]}</span>
+          </TooltipYear>
         ))}
-      </div>
+      </TooltipContainer>
     );
   };
+
+  showTooltip = (show = true) => () => !this.props.noTooltip && this.setState({ showTooltip: show });
 
   render() {
     if (!this.props.data) return null;
 
     return (
-      <div
+      <GlyphContainer
         role="button"
         tabIndex={this.props.id}
-        style={{ width: '100%', height: '100%', opacity: this.state.showTooltip ? 1 : 0.7 }}
+        active={this.state.showTooltip}
         onMouseEnter={this.showTooltip()}
         onMouseLeave={this.showTooltip(false)}
         onClick={() => this.props.onClick && this.props.onClick(this.props.id)}
@@ -79,7 +80,7 @@ export default class PieChartGlyph extends React.Component {
           width={this.props.size || 'auto'}
           height={this.props.size || 'auto'}
         />
-      </div>
+      </GlyphContainer>
     );
   }
 }
@@ -91,3 +92,30 @@ PieChartGlyph.propTypes = {
   onClick: PropTypes.func,
   noTooltip: PropTypes.bool,
 };
+
+const GlyphContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  opacity: ${(props) => props.active ? 1 : 0.7};
+`;
+
+const TooltipContainer = styled.div`
+  overflow: visible;
+  position: absolute;
+  bottom: 80%;
+  background-color: rgba(255,255,255,.9);
+`;
+
+const TooltipYear = styled.div`
+  white-space: nowrap;
+  font-weight: ${(props) => props.active ? 'bold' : 'normal'};
+  >:first-child:before {
+    content: '';
+    height: 10px;
+    width: 10px;
+    background-color: ${(props) => props.color};
+    display: inline-block;
+    margin-right: 5px;
+    margin-left: 2px;
+  }
+`;
