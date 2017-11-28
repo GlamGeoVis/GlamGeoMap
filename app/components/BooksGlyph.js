@@ -46,7 +46,7 @@ export default class BooksGlyph extends React.Component {
       }
     }
 
-    return (
+    let glyph = (
       <GlyphContainer size={this.props.size}>
         <svg viewBox={`0,0,${this.booksPerSide},${this.booksPerSide}`} style={{ width: '100%', height: '100%' }}>
           <g>
@@ -55,20 +55,56 @@ export default class BooksGlyph extends React.Component {
         </svg>
       </GlyphContainer>
     );
+
+    const addBorder = (content, distance, thickness, outer = false) => (
+      <BorderContainer distance={distance} thickness={thickness} outer={outer}>
+        {content}
+      </BorderContainer>
+    );
+
+    if (!this.props.borders) {
+      glyph = addBorder(glyph, 2, 2, true);
+    }
+
+    if (this.props.borders === 1) {
+      glyph = addBorder(glyph, 2, 4, true);
+    }
+
+    if (this.props.borders === 2) {
+      glyph = addBorder(glyph, 2, 4, false);
+      glyph = addBorder(glyph, 10, 4, true);
+    }
+
+    return glyph;
   }
 }
 
 BooksGlyph.propTypes = {
   data: PropTypes.object,
   size: PropTypes.number,
+  borders: PropTypes.number,
 };
 
 const GlyphContainer = styled.div`
   width: 100%;
   height: 100%;
-  border: 2px solid black;
-  border-radius: ${(props) => props.size / 5}px;
+  border: 3px solid black;
+  border-radius: 20%;
   box-shadow: ${(props) => `${props.size / 10}px ${props.size / 10}px ${props.size / 2}px black`};
   overflow: hidden;
-  opacity: .6;
+  position: relative;
+`;
+
+const BorderContainer = styled.div`
+  display: block;
+  height: 100%;
+  width: 100%;
+  box-sizing: content-box;
+  position: relative;
+  top: -${(props) => props.distance + props.thickness}px;
+  left: -${(props) => props.distance + props.thickness}px;
+  padding: ${(props) => props.distance}px;
+  border: ${(props) => props.thickness}px solid black;
+  border-radius: 20%;
+  opacity: ${(props) => props.outer ? 0.8 : 1};
 `;

@@ -93,10 +93,10 @@ export default class LeafletMap extends React.PureComponent {
           />
           {this.props.data && (this.props.data).map((data, idx) => {
             const size = dampen(data.count, 20, 100, this.props.total / 10);
-            const key = this.state.glyph + this.state.zoom + this.props.filterHash + ngeohash.encode(data.lat, data.lng, 4);
+            const key = this.state.glyph + size + this.props.filterHash + ngeohash.encode(data.lat, data.lng, 4);
             return (
               <DivIcon iconSize={[size, size]} key={key} position={[data.lat, data.lng]}>
-                <Glyph size={size} onClick={() => this.onGlyphClick(idx)} id={idx} data={data} />
+                <Glyph borders={2} size={size} onClick={() => this.onGlyphClick(idx)} id={idx} data={data} />
               </DivIcon>
             );
           })}

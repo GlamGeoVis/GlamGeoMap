@@ -35,7 +35,7 @@ const createFetchRequestOptions = (parameters) => ({
 
 export function* requestData() {
   try {
-    yield call(delay, 400);
+    yield call(delay, 600);
     const parameters = yield select(getParametersForRequest);
     yield put(request(parameters));
     const response = yield fetch(`${BACKEND_URL}/jsonData`, createFetchRequestOptions(parameters));

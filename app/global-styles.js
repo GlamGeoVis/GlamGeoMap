@@ -9,7 +9,7 @@ injectGlobal`
   }
 
   body {
-    font-family: Times, Arial, sans-serif;
+    font-family: Arial, sans-serif;
   }
 
   body.fontLoaded {
