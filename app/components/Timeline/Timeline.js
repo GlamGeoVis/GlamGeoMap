@@ -81,7 +81,7 @@ export default class Timeline extends React.Component {
 const SettingsContainer = styled.div`
   position: absolute;
   top: 0;
-  right: 30px;
+  right: 40px;
   
   button {
     opacity: .5;
@@ -115,7 +115,7 @@ Timeline.propTypes = {
   years: PropTypes.object,
 };
 
-const marginLeft = 30;
+const marginLeft = 40;
 
 class D3Timeline {
   constructor(options) {
@@ -123,7 +123,7 @@ class D3Timeline {
     document.getElementById('d3_timeline').innerHTML = '';
     this.hasBrushed = false;                                          // is the brush active?
     this.brushRange = [this.options.startYear, this.options.endYear]; // brush position
-    this.width = document.getElementById('d3_timeline').scrollWidth - 30;  // width of element in pixels
+    this.width = document.getElementById('d3_timeline').scrollWidth - 40;  // width of element in pixels
     this.height = 100;                                                // height of element in pixels
 
     this.x = d3.scaleLinear()                                         // x maps year to pixels
@@ -181,7 +181,7 @@ class D3Timeline {
       .call(this.extendTick)
       .select('.tick-extended')
       .attr('x1', 0)
-      .attr('x2', this.width)
+      .attr('x2', this.width - marginLeft)
       .attr('stroke', '#ccc')
       .attr('stroke-dasharray', 2)
       .attr('opacity', 0.5);

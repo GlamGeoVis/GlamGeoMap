@@ -67,7 +67,7 @@ export default class Layout extends React.Component {
         </TopSection>
         <BottomBarContainer active={this.props.layout.bars.bottom}>
           <div className="bottomBarContents">
-            <Timeline minYear={1650} maxYear={1950} />
+            <Timeline minYear={1650} maxYear={2017} />
           </div>
           <BottomHandle onClick={this.toggleBar('bottom')}>
             <Glyphicon glyph="signal" /> Timeline

@@ -88,6 +88,7 @@ export default class LeafletMap extends React.PureComponent {
           onViewportChanged={this.onViewportChanged}
         >
           <TileLayer
+            noWrap
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
           />
