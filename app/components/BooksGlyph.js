@@ -47,7 +47,10 @@ export default class BooksGlyph extends React.Component {
     }
 
     let glyph = (
-      <GlyphContainer size={this.props.size}>
+      <GlyphContainer
+        size={this.props.size}
+        onClick={() => this.props.onClick && this.props.onClick(this.props.id)}
+      >
         <svg viewBox={`0,0,${this.booksPerSide},${this.booksPerSide}`} style={{ width: '100%', height: '100%' }}>
           <g>
             { rects }
@@ -62,18 +65,18 @@ export default class BooksGlyph extends React.Component {
       </BorderContainer>
     );
 
-    if (!this.props.borders) {
-      glyph = addBorder(glyph, 2, 2, true);
-    }
 
-    if (this.props.borders === 1) {
-      glyph = addBorder(glyph, 2, 4, true);
-    }
+    glyph = addBorder(glyph, 2, 2, true);
+
 
     if (this.props.borders === 2) {
-      glyph = addBorder(glyph, 2, 4, false);
-      glyph = addBorder(glyph, 10, 4, true);
+      glyph = addBorder(glyph, 4 + (0.1 * this.props.size), 2, true);
     }
+
+    // if (this.props.borders === 2) {
+    //   glyph = addBorder(glyph, 2, 4, false);
+    //   glyph = addBorder(glyph, 10, 4, true);
+    // }
 
     return glyph;
   }
@@ -83,12 +86,14 @@ BooksGlyph.propTypes = {
   data: PropTypes.object,
   size: PropTypes.number,
   borders: PropTypes.number,
+  onClick: PropTypes.func,
+  id: PropTypes.number,
 };
 
 const GlyphContainer = styled.div`
   width: 100%;
   height: 100%;
-  border: 3px solid black;
+  border: ${(props) => Math.min(1, Math.round(props.size / 10))}px solid black;
   border-radius: 20%;
   box-shadow: ${(props) => `${props.size / 10}px ${props.size / 10}px ${props.size / 2}px black`};
   overflow: hidden;

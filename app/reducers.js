@@ -26,6 +26,28 @@ function routeReducer(state = routeInitialState, action) {
   }
 }
 
+/* fixes some details about datasets, TODO: remove */
+const fixedData = () => {
+  const dataSets = {
+    risse: {
+      backendURL: process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8000',
+      rows: 6924,
+      name: 'risse',
+    },
+    trove: {
+      backendURL: process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8000',
+      rows: 100563,
+      name: 'trove',
+    },
+  };
+
+  return ({
+    currentDataSet: window.location.search.substring(1) === 'trove' ? 'trove' : 'risse',
+    dataSets,
+  });
+};
+
+
 export default () => combineReducers({
   route: routeReducer,
   viewport: setViewportReducer,
@@ -34,4 +56,5 @@ export default () => combineReducers({
   clusterDetails: clusterDetailsReducer,
   timeline: timelineReducer,
   layout: layoutReducer,
+  fixedData,
 });

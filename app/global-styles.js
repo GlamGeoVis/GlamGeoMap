@@ -12,10 +12,6 @@ injectGlobal`
     font-family: Arial, sans-serif;
   }
 
-  body.fontLoaded {
-    font-family: Arial, sans-serif;
-  }
-
   #app {
     height: 100%;
     width: 100%;
@@ -23,7 +19,6 @@ injectGlobal`
   
   p,
   label {
-    font-family: Georgia, Times, 'Times New Roman', serif;
     line-height: 1.5em;
   }
   
@@ -33,5 +28,11 @@ injectGlobal`
   
   svg {
     overflow: visible !important;
+    vertical-align: top;
+  }
+  
+  button.btn.btn-primary {
+    background-color: #888 !important;
+    border: none;
   }
 `;

@@ -9,6 +9,7 @@ const mapStateToProps = (state) => ({
     filters: state.filters,
     timeline: state.timeline,
   })),
+  dataSet: state.fixedData.dataSets[state.fixedData.currentDataSet],
 });
 
 function mapDispatchToProps(dispatch) {

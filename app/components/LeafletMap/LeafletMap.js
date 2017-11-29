@@ -43,20 +43,11 @@ export default class LeafletMap extends React.PureComponent {
 
   setGlyphType = (glyph) => () => { this.setState({ glyph }); };
 
-  invalidateSize = () => {
-    this.leaflet.invalidateSize();
+  getScaleFactor = () => {
+    const magicScaleFactor = this.props.dataSet.name === 'risse' ? 2000 : 5000;
+    return (magicScaleFactor / this.props.dataSet.rows) * this.state.zoom * this.state.zoom;
   };
 
-  initialPosition = [51.505, -0.09];
-  iconData = {
-    count: 22,
-    years: {
-      1750: 2,
-      1800: 10,
-      1850: 8,
-      1900: 2,
-    },
-  };
   glyphMenu = () => (
     <GlyphMenuContainer>
       <DropdownButton id="glyphSelector" bsStyle="primary" title="Glyph type" pullRight>
@@ -71,6 +62,21 @@ export default class LeafletMap extends React.PureComponent {
       </DropdownButton>
     </GlyphMenuContainer>
   );
+
+  initialPosition = [51.505, -0.09];
+  iconData = {
+    count: 22,
+    years: {
+      1750: 2,
+      1800: 10,
+      1850: 8,
+      1900: 2,
+    },
+  };
+
+  invalidateSize = () => {
+    this.leaflet.invalidateSize();
+  };
 
   render() {
     const Glyph = this.state.glyph === 'piechart' ? PieChartGlyph : BooksGlyph;
@@ -93,11 +99,17 @@ export default class LeafletMap extends React.PureComponent {
             url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
           />
           {this.props.data && (this.props.data).map((data, idx) => {
-            const size = dampen(data.count, 20, 100, this.props.total / 10);
+            // const size = scaleDampen(data.count, 20, 100, this.props.total / 10);
+            let size = scaleLinear(data.count, 10, this.getScaleFactor());
+            let borders = 0;
+            if (data.count / this.props.dataSet.rows > 0.1) {
+              borders = 2;
+              size = Math.round(size * 0.5);
+            }
             const key = this.state.glyph + size + this.props.filterHash + ngeohash.encode(data.lat, data.lng, 4);
             return (
               <DivIcon iconSize={[size, size]} key={key} position={[data.lat, data.lng]}>
-                <Glyph borders={2} size={size} onClick={() => this.onGlyphClick(idx)} id={idx} data={data} />
+                <Glyph borders={borders} size={size} onClick={() => this.onGlyphClick(idx)} id={idx} data={data} />
               </DivIcon>
             );
           })}
@@ -110,14 +122,17 @@ export default class LeafletMap extends React.PureComponent {
   }
 }
 
-const dampen = (x, min, max, range) => (max / 2) * (1 / (0.5 + Math.exp(-x / range)));
+// const scaleDampen = (x, min, max, range) => Math.round((max / 2) * (1 / (0.5 + Math.exp(-x / range))));
+const scaleLinear = (x, min, scaleFactor) => Math.max(min, Math.sqrt(Math.round(x * scaleFactor)));
+
 
 LeafletMap.propTypes = {
   style: PropTypes.object,
   dispatch: PropTypes.func,
   data: PropTypes.array,
-  total: PropTypes.number,
+  // total: PropTypes.number,
   filterHash: PropTypes.string,
+  dataSet: PropTypes.object,
 };
 
 

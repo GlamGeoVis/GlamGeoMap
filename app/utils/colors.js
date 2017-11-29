@@ -1,11 +1,17 @@
 export const colorForYear = (year) => {
-  if (year < 1750) { return [191, 211, 230]; }
-  if (year < 1800) { return [158, 188, 218]; }
-  if (year < 1840) { return [140, 150, 198]; }
-  if (year < 1890) { return [136, 86, 167]; }
-  return [129, 15, 124];
+  const range = [1700, 2010];
+
+  const scale = (min, max) =>
+    min + ((max - min) * ((year - range[0]) / (range[1] - range[0])));
+
+  const r = scale(172, 0);
+  const g = scale(0, 255);
+  const b = 255;
+
+  return [Math.round(r), Math.round(g), Math.round(b)];
 };
 
-export const buckets = [1700, 1775, 1820, 1870, 1920];
+export const buckets = [1700, 1750, 1900, 1850, 1900, 1950, 2000];
 
 export const rgbString = (colorArray) => `rgb(${colorArray[0]},${colorArray[1]},${colorArray[2]})`;
+

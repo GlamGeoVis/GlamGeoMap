@@ -49,17 +49,17 @@ const StyledReactTable = styled(ReactTable)`
   height: 100%;
   padding-bottom: 25px;
   .rt-thead {
-    background-color: purple;
-    color: white;
+    background-color: #888;
+    color:white;
     
     .rt-resizable-header {
       border-right: 1px solid rgba(255,255,255,.5);
     }
   }
   .rt-td {
-    background-color: #F0F0F6;
-    border-right: 2px solid black !important;
-    border-bottom: 2px solid black !important;
-    white-space: normal;
+    //background-color: #F0F0F6;
+    //border-right: 2px solid black !important;
+    //border-bottom: 2px solid black !important;
+    white-space: normal !important;
   }
 `;
