@@ -35,7 +35,7 @@ const fixedData = () => {
       name: 'risse',
     },
     trove: {
-      backendURL: process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8000',
+      backendURL: process.env.NODE_ENV === 'production' ? '/trove' : 'http://localhost:8000',
       rows: 100563,
       name: 'trove',
     },
