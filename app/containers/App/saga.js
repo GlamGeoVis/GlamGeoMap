@@ -4,7 +4,7 @@ import 'whatwg-fetch';
 
 import { SET_VIEWPORT } from '../LeafletMap/constants';
 import { SET_TIME_RANGE } from '../Timeline/constants';
-import { BACKEND_URL, GET_CLUSTER_DETAILS } from './constants';
+import { GET_CLUSTER_DETAILS } from './constants';
 import {
   getClusterDetailsCompleted, getClusterDetailsError, request, requestCompleted,
   requestError,
@@ -23,6 +23,8 @@ const getParametersForRequest = (state) => ({
   ...filterTruthyValues(state.filters),
 });
 
+const getBackendURL = (state) => state.fixedData.dataSets[state.fixedData.currentDataSet].backendURL;
+
 const createFetchRequestOptions = (parameters) => ({
   method: 'POST',
   headers: new Headers({
@@ -38,7 +40,8 @@ export function* requestData() {
     yield call(delay, 600);
     const parameters = yield select(getParametersForRequest);
     yield put(request(parameters));
-    const response = yield fetch(`${BACKEND_URL}/jsonData`, createFetchRequestOptions(parameters));
+    const backendURL = yield select(getBackendURL);
+    const response = yield fetch(`${backendURL}/jsonData`, createFetchRequestOptions(parameters));
     if (response.status !== 200) {
       throw Error(`response status code was ${response.status}`);
     }
@@ -68,8 +71,8 @@ export function* requestClusterDetailsData(action) {
     }
     const parameters = yield select(getParametersForRequest);
     parameters.id = action.id;
-
-    const response = yield fetch(`${BACKEND_URL}/clusterDetails`, createFetchRequestOptions(parameters));
+    const backendURL = yield select(getBackendURL);
+    const response = yield fetch(`${backendURL}/clusterDetails`, createFetchRequestOptions(parameters));
     if (response.status !== 200) {
       throw Error(`response status code was ${response.status}`);
     }
