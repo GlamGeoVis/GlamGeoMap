@@ -1,8 +1,7 @@
 ![TravisCIBadge](https://travis-ci.org/GlamGeoVis/GlamGeoMap.svg?branch=master)
 
-Web based GLAMVis implementation.
-
-This project was bootstrapped using [react-boilerplate](https://github.com/react-boilerplate/react-boilerplate).
+# Glam Frontend
+This is the frontend for GLAM. You can find the backend at [GlamGeoVis/GlamGeoServer](https://github.com/GlamGeoVis/GlamGeoServer).
 
 ## Requirements
 * NPM `@>=3`, yarn, Node
