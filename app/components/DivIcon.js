@@ -98,7 +98,7 @@ export default class Divicon extends MapLayer {
   }
 
   shouldComponentUpdate() {
-    return false;
+    return true;
   }
 
   componentDidUpdate(fromProps) {

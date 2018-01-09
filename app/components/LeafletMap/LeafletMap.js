@@ -62,6 +62,7 @@ export default class LeafletMap extends React.PureComponent {
   onViewportChanged = () => {
     if (this.state.zoom !== this.leaflet.getZoom()) {
       this.setState({ zoom: this.leaflet.getZoom() });
+      console.log(`zoom: ${this.leaflet.getZoom()}`);
     }
     const bounds = this.leaflet.getBounds();
     // eslint-disable-next-line
@@ -112,7 +113,7 @@ export default class LeafletMap extends React.PureComponent {
   render() {
     console.log('rendering LeafletMap');
     const glyphs = getGlyphs(this.props.clusters, this.state.zoom).map((glyph) => aggregateGlyph(glyph, this.props.leafs));
-
+    console.log(glyphs.length + ' Glyphs drawing');
     const Glyph = this.state.glyph === 'piechart' ? PieChartGlyph : BooksGlyph;
     return (
       <div style={{ ...this.props.style, position: 'relative' }}>
@@ -140,7 +141,7 @@ export default class LeafletMap extends React.PureComponent {
               borders = 2;
               size = Math.round(size * 0.5);
             }
-            const key = this.state.glyph + size + this.props.filterHash + ngeohash.encode(data.lat, data.lng, 4);
+            const key = this.state.glyph + size + this.props.filterHash + data.lat + data.lng;
             return (
               <DivIcon iconSize={[size, size]} key={key} position={[data.lat, data.lng]}>
                 <Glyph borders={borders} size={size} onClick={() => this.onGlyphClick(idx)} id={idx} data={data} />
