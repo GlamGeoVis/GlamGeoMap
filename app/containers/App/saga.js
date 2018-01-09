@@ -57,7 +57,7 @@ export function* requestData() {
  * Root saga manages watcher lifecycle
  */
 export function* refresh() {
-  yield takeLatest(SET_VIEWPORT, requestData);
+  // yield takeLatest(SET_VIEWPORT, requestData);
   yield takeLatest(SET_TIME_RANGE, requestData);
   yield takeLatest(SET_FILTER, requestData);
 }

@@ -16,6 +16,7 @@ export function dataReducer(state = initialState, action) {
         clusters: action.data.clusters,
         years: action.data.years,
         total: action.data.total,
+        leafs: action.data.data,
       };
     default:
       return state;

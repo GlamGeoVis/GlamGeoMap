@@ -17,6 +17,35 @@ import './leaflet.css';
 
 /* eslint-disable react/no-array-index-key */
 
+const getLeaves = (node) => Number.isInteger(node) ? [node] : node.reduce((acc, cur) => acc.concat(getLeaves(cur)), []);
+const getGlyphs = (node, zoomLevel, depth = 0) =>
+  (depth >= zoomLevel)
+    ? node
+    : node.reduce(
+    (acc, cur) => acc.concat(Number.isInteger(cur) ? [cur] : getGlyphs(cur, zoomLevel, depth + 1))
+    , []);
+
+const aggregateGlyph = (node, leavesData) => {
+  const leaves = getLeaves(node);
+  const result = leaves.reduce((acc, cur) => {
+    const leafData = leavesData.find((leaf) => leaf[4] === cur);
+    acc.lat += leafData[0];
+    acc.lng += leafData[1];
+    acc.count += 1;
+    acc.years = acc.years.map((a, i) => a + leafData[3][i]);
+    return acc;
+  }, {
+    lat: 0,
+    lng: 0,
+    count: 0,
+    years: [0, 0, 0, 0, 0, 0],
+  });
+  result.lat /= leaves.length;
+  result.lng /= leaves.length;
+  return result;
+};
+
+
 export default class LeafletMap extends React.PureComponent {
   constructor() {
     super();
@@ -27,11 +56,13 @@ export default class LeafletMap extends React.PureComponent {
     this.onViewportChanged();
   }
   shouldComponentUpdate(newProps, newState) {
-    return newProps.data !== this.props.data || this.state !== newState;
+    return newProps.clusters !== this.props.clusters || this.state !== newState;
   }
 
   onViewportChanged = () => {
-    this.setState({ zoom: this.leaflet.getZoom() });
+    if (this.state.zoom !== this.leaflet.getZoom()) {
+      this.setState({ zoom: this.leaflet.getZoom() });
+    }
     const bounds = this.leaflet.getBounds();
     // eslint-disable-next-line
     this.props.dispatch(setViewport(bounds._northEast, bounds._southWest));
@@ -79,6 +110,9 @@ export default class LeafletMap extends React.PureComponent {
   };
 
   render() {
+    console.log('rendering LeafletMap');
+    const glyphs = getGlyphs(this.props.clusters, this.state.zoom).map((glyph) => aggregateGlyph(glyph, this.props.leafs));
+
     const Glyph = this.state.glyph === 'piechart' ? PieChartGlyph : BooksGlyph;
     return (
       <div style={{ ...this.props.style, position: 'relative' }}>
@@ -98,7 +132,7 @@ export default class LeafletMap extends React.PureComponent {
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
           />
-          {this.props.data && (this.props.data).map((data, idx) => {
+          {glyphs && glyphs.map((data, idx) => {
             // const size = scaleDampen(data.count, 20, 100, this.props.total / 10);
             let size = scaleLinear(data.count, 10, this.getScaleFactor());
             let borders = 0;
@@ -129,7 +163,8 @@ const scaleLinear = (x, min, scaleFactor) => Math.max(min, Math.sqrt(Math.round(
 LeafletMap.propTypes = {
   style: PropTypes.object,
   dispatch: PropTypes.func,
-  data: PropTypes.array,
+  leafs: PropTypes.array,
+  clusters: PropTypes.array,
   // total: PropTypes.number,
   filterHash: PropTypes.string,
   dataSet: PropTypes.object,

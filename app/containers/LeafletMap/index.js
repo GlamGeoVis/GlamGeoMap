@@ -3,7 +3,8 @@ import md5 from 'md5';
 import LeafletMap from '../../components/LeafletMap/LeafletMap';
 
 const mapStateToProps = (state) => ({
-  data: state.data.clusters,
+  clusters: state.data.clusters,
+  leafs: state.data.leafs,
   total: state.data.total,
   filterHash: md5(JSON.stringify({
     filters: state.filters,
