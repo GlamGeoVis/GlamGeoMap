@@ -4,7 +4,7 @@ import {
 } from './constants';
 
 const initialState = {
-  clusters: [],
+  clusters: {},
   years: {},
   total: 0,
 };

@@ -14,24 +14,31 @@ import BooksGlyph from '../BooksGlyph';
 import PieChartGlyph from '../PieChartGlyph';
 
 import './leaflet.css';
+import Scaler from '../../containers/Scaler';
+import SquareGlyph from '../SquareGlyph';
 
 /* eslint-disable react/no-array-index-key */
+const getLeaves = (node) => !node.c ? [node] : node.c.reduce((acc, cur) => acc.concat(getLeaves(cur)), []);
 
-const getLeaves = (node) => Number.isInteger(node) ? [node] : node.reduce((acc, cur) => acc.concat(getLeaves(cur)), []);
-const getGlyphs = (node, zoomLevel, depth = 0) =>
-  (depth >= zoomLevel)
-    ? node
-    : node.reduce(
-    (acc, cur) => acc.concat(Number.isInteger(cur) ? [cur] : getGlyphs(cur, zoomLevel, depth + 1))
-    , []);
+const getGlyphs = (glyph, scale) => {
+  if (glyph.a < scale || !glyph.c) {
+    return [glyph];
+  }
+  else {
+    return glyph.c.reduce((acc, cur) => acc.concat(getGlyphs(cur, scale)), []);
+  }
+};
+
+const scaleScale = (val, max) => (val / 100) * max;
+
 
 const aggregateGlyph = (node, leavesData) => {
   const leaves = getLeaves(node);
   const result = leaves.reduce((acc, cur) => {
-    const leafData = leavesData.find((leaf) => leaf[4] === cur);
+    const leafData = leavesData.find((leaf) => leaf[4] === cur.i);
     acc.lat += leafData[0];
     acc.lng += leafData[1];
-    acc.count += 1;
+    acc.count += leafData[2];
     acc.years = acc.years.map((a, i) => a + leafData[3][i]);
     return acc;
   }, {
@@ -49,14 +56,14 @@ const aggregateGlyph = (node, leavesData) => {
 export default class LeafletMap extends React.PureComponent {
   constructor() {
     super();
-    this.state = { zoom: 5, glyph: 'piechart' };
+    this.state = { zoom: 5, glyph: 'square' };
   }
 
   componentDidMount() {
     this.onViewportChanged();
   }
   shouldComponentUpdate(newProps, newState) {
-    return newProps.clusters !== this.props.clusters || this.state !== newState;
+    return newProps.clusters !== this.props.clusters || this.state !== newState || this.props.scale !== newProps.scale;
   }
 
   onViewportChanged = () => {
@@ -83,6 +90,10 @@ export default class LeafletMap extends React.PureComponent {
   glyphMenu = () => (
     <GlyphMenuContainer>
       <DropdownButton id="glyphSelector" bsStyle="primary" title="Glyph type" pullRight>
+        <GlyphMenuItem onClick={this.setGlyphType('square')}>
+          <div><SquareGlyph data={this.iconData} size={18} noTooltip /></div>
+          Square
+        </GlyphMenuItem>
         <GlyphMenuItem onClick={this.setGlyphType('piechart')}>
           <div><PieChartGlyph data={this.iconData} size={18} noTooltip /></div>
           Pie chart (chart.js)
@@ -111,10 +122,19 @@ export default class LeafletMap extends React.PureComponent {
   };
 
   render() {
-    console.log('rendering LeafletMap');
-    const glyphs = getGlyphs(this.props.clusters, this.state.zoom).map((glyph) => aggregateGlyph(glyph, this.props.leafs));
-    console.log(glyphs.length + ' Glyphs drawing');
-    const Glyph = this.state.glyph === 'piechart' ? PieChartGlyph : BooksGlyph;
+    let glyphs = [];
+    if (this.props.clusters && this.props.clusters.c) {
+      glyphs = getGlyphs(this.props.clusters, scaleScale(this.props.scale, this.props.clusters.a)).map((glyph) => aggregateGlyph(glyph, this.props.leafs));
+    }
+    // console.log(glyphs.length + ' Glyphs drawing');
+    let Glyph = SquareGlyph;
+    if (this.state.glyph === 'piechart') {
+      Glyph = PieChartGlyph;
+    }
+    if (this.state.glyph === 'glam') {
+      Glyph = BooksGlyph;
+    }
+
     return (
       <div style={{ ...this.props.style, position: 'relative' }}>
         <Map
@@ -135,16 +155,17 @@ export default class LeafletMap extends React.PureComponent {
           />
           {glyphs && glyphs.map((data, idx) => {
             // const size = scaleDampen(data.count, 20, 100, this.props.total / 10);
-            let size = scaleLinear(data.count, 10, this.getScaleFactor());
-            let borders = 0;
-            if (data.count / this.props.dataSet.rows > 0.1) {
-              borders = 2;
-              size = Math.round(size * 0.5);
-            }
-            const key = this.state.glyph + size + this.props.filterHash + data.lat + data.lng;
+            // let size = scaleLinear(data.count, 10, this.getScaleFactor());
+            // let borders = 0;
+            // if (data.count / this.props.dataSet.rows > 0.1) {
+            //   borders = 2;
+            //   size = Math.round(size * 0.5);
+            // }
+            const size = 0.005 * (2**this.state.zoom) * this.props.scale * Math.sqrt(data.count);
+            const key = this.state.glyph + size +  this.props.filterHash + data.lat + data.lng;
             return (
               <DivIcon iconSize={[size, size]} key={key} position={[data.lat, data.lng]}>
-                <Glyph borders={borders} size={size} onClick={() => this.onGlyphClick(idx)} id={idx} data={data} />
+                <Glyph borders={1} size={size} onClick={() => this.onGlyphClick(idx)} id={idx} data={data} />
               </DivIcon>
             );
           })}
@@ -152,6 +173,9 @@ export default class LeafletMap extends React.PureComponent {
         <TopRight>
           {this.glyphMenu()}
         </TopRight>
+        <Top>
+          <Scaler />
+        </Top>
       </div>
     );
   }
@@ -165,12 +189,22 @@ LeafletMap.propTypes = {
   style: PropTypes.object,
   dispatch: PropTypes.func,
   leafs: PropTypes.array,
-  clusters: PropTypes.array,
+  clusters: PropTypes.object,
   // total: PropTypes.number,
   filterHash: PropTypes.string,
   dataSet: PropTypes.object,
 };
 
+
+const Top = styled.div`
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin: 0 auto;
+  width: 50%;
+  z-index: 1000;
+`;
 
 const TopRight = styled.div`
   position: absolute;

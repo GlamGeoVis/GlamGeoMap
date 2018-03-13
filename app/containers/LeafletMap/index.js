@@ -10,6 +10,7 @@ const mapStateToProps = (state) => ({
     filters: state.filters,
     timeline: state.timeline,
   })),
+  scale: state.scale,
   dataSet: state.fixedData.dataSets[state.fixedData.currentDataSet],
 });
 

@@ -10,6 +10,7 @@ import filterReducer from './containers/LeftSideBar/reducer';
 import { dataReducer, clusterDetailsReducer } from './containers/App/reducer';
 import timelineReducer from './containers/Timeline/reducer';
 import layoutReducer from './containers/Layout/reducer';
+import scaleReducer from './containers/Scaler/reducer';
 
 const routeInitialState = {
   location: null,
@@ -56,5 +57,6 @@ export default () => combineReducers({
   clusterDetails: clusterDetailsReducer,
   timeline: timelineReducer,
   layout: layoutReducer,
+  scale: scaleReducer,
   fixedData,
 });
