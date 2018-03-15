@@ -64,7 +64,7 @@ export default class Timeline extends React.Component {
       <div>
         <TimelineRoot id="d3_timeline" />
         <SettingsContainer>
-          <Dropdown dropup pullRight>
+          <Dropdown dropup pullRight id="scale">
             <Dropdown.Toggle><Glyphicon glyph="cog" /></Dropdown.Toggle>
             <Dropdown.Menu>
               <MenuItem onClick={this.toggleScaleYAxis} eventKey="1">
