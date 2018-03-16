@@ -4,28 +4,24 @@ import styled from 'styled-components';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './leaflet.css';
-import DivIcon from './DivIcon';
+import Glyphs from '../../containers/LeafletMap/Glyphs';
+import Scaler from '../../containers/Scaler';
 
 export default class LeafletMap extends React.PureComponent {
   constructor() {
     super();
-    this.state = { zoom: 5, glyph: 'square' };
+    this.state = {
+      zoom: 5,
+      glyph: 'square',
+    };
   }
 
   componentDidMount() {
-    const map = L.map('leaflet_root').setView([51.505, -0.09], 13);
-    window.map = map;
+    this.map = L.map('leaflet_root').setView([51.505, -0.09], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
-    const myIcon = new DivIcon({ className: 'my-div-icon' });
-    L.marker([50.505, 30.57], { icon: myIcon }).addTo(map);
-    const elm = myIcon._icon;
-    // elm.style.height = '100px';
-    // elm.style.width = '100px';
-    elm.style.backgroundColor = 'blue';
-    window.elm = elm;
-    window.L = L;
+    }).addTo(this.map);
+    this.forceUpdate();
   }
 
   shouldComponentUpdate() {
@@ -37,15 +33,11 @@ export default class LeafletMap extends React.PureComponent {
       <div style={{ ...this.props.style, position: 'relative' }}>
         <LeafletRoot id="leaflet_root" />
         <Overlay>
-          <div
-            style={{
-              backgroundColor: 'red',
-              position: 'absolute',
-              width: '100px',
-              height: '100px',
-            }}
-          />
+          <Top>
+            <Scaler />
+          </Top>
         </Overlay>
+        { this.map && <Glyphs map={this.map} /> }
       </div>
     );
   }
@@ -63,7 +55,8 @@ LeafletMap.propTypes = {
 
 const LeafletRoot = styled.div`
   width: 100%;
-  height: 100%
+  height: 100%;
+  position: relative;
 `;
 
 const Overlay = styled.div`
@@ -79,10 +72,10 @@ const Overlay = styled.div`
 const Top = styled.div`
   position: absolute;
   top: 20px;
-  left: 50%;
+  left: 50vh;
   transform: translate(-50%, 0);
   margin: 0 auto;
-  width: 50%;
+  width: 50vh;
   z-index: 1000;
 `;
 

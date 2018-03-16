@@ -16,3 +16,4 @@ export const REQUEST_ERROR = 'app/REQUEST_DATA/error';
 export const GET_CLUSTER_DETAILS = 'app/GET_CLUSTER_DETAILS';
 export const GET_CLUSTER_DETAILS_COMPLETED = 'app/GET_CLUSTER_DETAILS/completed';
 export const GET_CLUSTER_DETAILS_ERROR = 'app/GET_CLUSTER_DETAILS/error';
+export const SET_GLYPHS_DATA = 'app/SET_GLYPHS_DATA';

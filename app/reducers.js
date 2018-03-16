@@ -7,7 +7,7 @@ import { LOCATION_CHANGE } from 'react-router-redux';
 
 import setViewportReducer from './containers/LeafletMap/reducer';
 import filterReducer from './containers/LeftSideBar/reducer';
-import { dataReducer, clusterDetailsReducer } from './containers/App/reducer';
+import { dataReducer, clusterDetailsReducer, setGlyphsDataReducer } from './containers/App/reducer';
 import timelineReducer from './containers/Timeline/reducer';
 import layoutReducer from './containers/Layout/reducer';
 import scaleReducer from './containers/Scaler/reducer';
@@ -58,5 +58,6 @@ export default () => combineReducers({
   timeline: timelineReducer,
   layout: layoutReducer,
   scale: scaleReducer,
+  glyphs: setGlyphsDataReducer,
   fixedData,
 });

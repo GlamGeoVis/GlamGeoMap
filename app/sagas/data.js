@@ -1,16 +1,15 @@
 import { delay } from 'redux-saga';
-import { put, call, fork, takeLatest, select } from 'redux-saga/effects';
+import { put, call, takeLatest, select } from 'redux-saga/effects';
 import 'whatwg-fetch';
 
-import { SET_VIEWPORT } from '../LeafletMap/constants';
-import { SET_TIME_RANGE } from '../Timeline/constants';
-import { GET_CLUSTER_DETAILS } from './constants';
+import { SET_TIME_RANGE } from '../containers/Timeline/constants';
+import { GET_CLUSTER_DETAILS } from '../containers/App/constants';
 import {
   getClusterDetailsCompleted, getClusterDetailsError, request, requestCompleted,
   requestError,
-} from './actions';
-import { SET_FILTER } from '../LeftSideBar/constants';
-import { toggleBar } from '../Layout/actions';
+} from '../containers/App/actions';
+import { SET_FILTER } from '../containers/LeftSideBar/constants';
+import { toggleBar } from '../containers/Layout/actions';
 
 const filterTruthyValues = (obj) => // filters obj, leaves key value pairs with truthy value
   Object.keys(obj)
@@ -38,6 +37,7 @@ const createFetchRequestOptions = (parameters) => ({
 export function* requestData() {
   try {
     yield call(delay, 600);
+    console.time('dataRequest');
     const parameters = yield select(getParametersForRequest);
     yield put(request(parameters));
     const backendURL = yield select(getBackendURL);
@@ -46,9 +46,11 @@ export function* requestData() {
       throw Error(`response status code was ${response.status}`);
     }
     const dataJSON = yield response.json();
+    console.timeEnd('dataRequest');
     yield put(requestCompleted(dataJSON));
   } catch (err) {
     console.log('error', err);
+    console.timeEnd('dataRequest');
     yield put(requestError(err));
   }
 }
@@ -86,11 +88,4 @@ export function* requestClusterDetailsData(action) {
 
 export function* clusterDetails() {
   yield takeLatest(GET_CLUSTER_DETAILS, requestClusterDetailsData);
-}
-
-export default function* saga() {
-  yield [
-    fork(refresh),
-    fork(clusterDetails),
-  ];
 }

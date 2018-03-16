@@ -2,33 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-export default class SquareGlyph extends React.Component {
-
-  render() {
-    if (!this.props.data) { return null; }
-    let glyph = (
-      <GlyphContainer
-        size={this.props.size}
-        onClick={() => this.props.onClick && this.props.onClick(this.props.id)}
-      >
-      </GlyphContainer>
-    );
-
-    return glyph;
-  }
-}
-
+const SquareGlyph = ({ glyph }) => <GlyphContainer count={glyph.count} />;
 SquareGlyph.propTypes = {
-  data: PropTypes.object,
-  size: PropTypes.number,
-  borders: PropTypes.number,
-  onClick: PropTypes.func,
-  id: PropTypes.number,
+  glyph: PropTypes.object,
 };
+export default SquareGlyph;
 
 const GlyphContainer = styled.div`
-  width: 100%;
-  height: 100%;
+  width: ${(props) => Math.min(50, props.count)}px;
+  height: ${(props) => Math.min(50, props.count)}px;
   background-color: red;
   position: relative;
 `;
