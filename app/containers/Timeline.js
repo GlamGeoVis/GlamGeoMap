@@ -6,7 +6,7 @@
 
 import { connect } from 'react-redux';
 
-import Timeline from '../../components/Timeline/Timeline';
+import Timeline from '../components/Timeline/Timeline';
 
 const mapStateToProps = (state) => ({
   timeline: state.timeline,

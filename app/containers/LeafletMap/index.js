@@ -20,4 +20,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(LeafletMap);
+export default connect(mapStateToProps, mapDispatchToProps)(LeafletMap);

@@ -1,4 +1,3 @@
-
 import {
   setTimeRange,
 } from '../actions';

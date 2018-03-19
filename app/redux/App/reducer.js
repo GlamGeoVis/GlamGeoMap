@@ -3,6 +3,7 @@ import {
   GET_CLUSTER_DETAILS_COMPLETED,
   REQUEST_COMPLETED, SET_GLYPHS_DATA,
 } from './constants';
+import L from 'leaflet';
 
 const initialState = {
   clusters: {},
@@ -36,7 +37,18 @@ export function dataReducer(state = initialState, action) {
         clusters: parseClusters(action.data.clusters),
         years: action.data.years,
         total: action.data.total,
-        leafData: action.data.data,
+        leafData: action.data.data.map((d) => {
+          const latLng = L.Projection.SphericalMercator.unproject(new L.Point(d[0], d[1]));
+          return {
+            lat: latLng.lat,
+            lng: latLng.lng,
+            x: d[0],
+            y: d[1],
+            count: d[2],
+            yearBins: d[3],
+            id: d[4],
+          };
+        }),
       };
     default:
       return state;

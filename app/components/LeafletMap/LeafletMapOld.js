@@ -6,8 +6,8 @@ import { Map, TileLayer } from 'react-leaflet';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import 'leaflet/dist/leaflet.css';
 
-import { setViewport } from '../../containers/LeafletMap/actions';
-import { getClusterDetails } from '../../containers/App/actions';
+import { setViewport } from '../../redux/LeafletMap/actions';
+import { getClusterDetails } from '../../redux/App/actions';
 
 import DivIcon from '../DivIcon';
 import BooksGlyph from '../BooksGlyph';

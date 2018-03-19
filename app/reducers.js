@@ -5,12 +5,13 @@
 import { combineReducers } from 'redux';
 import { LOCATION_CHANGE } from 'react-router-redux';
 
-import setViewportReducer from './containers/LeafletMap/reducer';
-import filterReducer from './containers/LeftSideBar/reducer';
-import { dataReducer, clusterDetailsReducer, setGlyphsDataReducer } from './containers/App/reducer';
-import timelineReducer from './containers/Timeline/reducer';
-import layoutReducer from './containers/Layout/reducer';
-import scaleReducer from './containers/Scaler/reducer';
+import leafletMapReducer from './redux/LeafletMap/reducer';
+import filterReducer from './redux/LeftSideBar/reducer';
+import { dataReducer, clusterDetailsReducer, setGlyphsDataReducer } from './redux/App/reducer';
+import timelineReducer from './redux/Timeline/reducer';
+import layoutReducer from './redux/Layout/reducer';
+import scaleReducer from './redux/Scaler/reducer';
+import zoomToScaleReducer from './redux/zoomToScale/reducer';
 
 const routeInitialState = {
   location: null,
@@ -51,7 +52,7 @@ const fixedData = () => {
 
 export default () => combineReducers({
   route: routeReducer,
-  viewport: setViewportReducer,
+  leafletMap: leafletMapReducer,
   filters: filterReducer,
   data: dataReducer,
   clusterDetails: clusterDetailsReducer,
@@ -59,5 +60,6 @@ export default () => combineReducers({
   layout: layoutReducer,
   scale: scaleReducer,
   glyphs: setGlyphsDataReducer,
+  zoomToScale: zoomToScaleReducer,
   fixedData,
 });

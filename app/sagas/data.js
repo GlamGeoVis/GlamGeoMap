@@ -2,14 +2,14 @@ import { delay } from 'redux-saga';
 import { put, call, takeLatest, select } from 'redux-saga/effects';
 import 'whatwg-fetch';
 
-import { SET_TIME_RANGE } from '../containers/Timeline/constants';
-import { GET_CLUSTER_DETAILS } from '../containers/App/constants';
+import { SET_TIME_RANGE } from '../redux/Timeline/constants';
+import { GET_CLUSTER_DETAILS } from '../redux/App/constants';
 import {
   getClusterDetailsCompleted, getClusterDetailsError, request, requestCompleted,
   requestError,
-} from '../containers/App/actions';
-import { SET_FILTER } from '../containers/LeftSideBar/constants';
-import { toggleBar } from '../containers/Layout/actions';
+} from '../redux/App/actions';
+import { SET_FILTER } from '../redux/LeftSideBar/constants';
+import { toggleBar } from '../redux/Layout/actions';
 
 const filterTruthyValues = (obj) => // filters obj, leaves key value pairs with truthy value
   Object.keys(obj)

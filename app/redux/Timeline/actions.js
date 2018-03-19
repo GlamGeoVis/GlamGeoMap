@@ -1,9 +1,3 @@
-/*
- *
- * Timeline actions
- *
- */
-
 import {
   SET_TIME_RANGE,
 } from './constants';

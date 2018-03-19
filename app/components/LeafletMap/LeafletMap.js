@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import './leaflet.css';
 import Glyphs from '../../containers/LeafletMap/Glyphs';
 import Scaler from '../../containers/Scaler';
+import { setZoomLevel } from '../../redux/LeafletMap/actions';
 
 export default class LeafletMap extends React.PureComponent {
   constructor() {
@@ -13,20 +14,60 @@ export default class LeafletMap extends React.PureComponent {
     this.state = {
       zoom: 5,
       glyph: 'square',
+      mapBounds: {
+        x: {
+          min: 0,
+          max: 0,
+        },
+        y: {
+          min: 0,
+          max: 0,
+        },
+      },
     };
   }
 
   componentDidMount() {
-    this.map = L.map('leaflet_root').setView([51.505, -0.09], 13);
+    window.L = L;
+    this.map = L.map('leaflet_root', {
+      inertia: false,
+      maxZoom: 15,
+    }).setView([51.505, -0.09], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      noWrap: true,
     }).addTo(this.map);
-    this.forceUpdate();
+    window.map = this.map;
+    this.setMapBounds();
+    this.map.on('moveend', this.setMapBounds);
+    this.map.on('zoomend', () => {
+      console.log('bla');
+      this.props.dispatch(setZoomLevel(this.map.getZoom()));
+    });
+    // this.forceUpdate();
   }
 
-  shouldComponentUpdate() {
-    return false;
-  }
+  setMapBounds = () => {
+    const bounds = this.map.getBounds();
+    const ne = L.Projection.SphericalMercator.project(bounds._northEast);
+    const sw = L.Projection.SphericalMercator.project(bounds._southWest);
+    this.setState({
+      mapBounds: {
+        x: {
+          min: sw.x,
+          max: ne.x,
+        },
+        y: {
+          min: sw.y,
+          max: ne.y,
+        },
+      },
+    });
+  };
+
+  // shouldComponentUpdate() {
+    // return false;
+  // }
 
   render() {
     return (
@@ -37,7 +78,7 @@ export default class LeafletMap extends React.PureComponent {
             <Scaler />
           </Top>
         </Overlay>
-        { this.map && <Glyphs map={this.map} /> }
+        { this.map && <Glyphs mapBounds={this.state.mapBounds} map={this.map} /> }
       </div>
     );
   }
@@ -45,7 +86,7 @@ export default class LeafletMap extends React.PureComponent {
 
 LeafletMap.propTypes = {
   style: PropTypes.object,
-  // dispatch: PropTypes.func,
+  dispatch: PropTypes.func,
   // leafs: PropTypes.array,
   // clusters: PropTypes.object,
   // total: PropTypes.number,
@@ -72,10 +113,10 @@ const Overlay = styled.div`
 const Top = styled.div`
   position: absolute;
   top: 20px;
-  left: 50vh;
+  left: 50vw;
   transform: translate(-50%, 0);
   margin: 0 auto;
-  width: 50vh;
+  width: 50vw;
   z-index: 1000;
 `;
 

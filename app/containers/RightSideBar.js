@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import RightSideBar from '../../components/RightSideBar';
+import RightSideBar from '../components/RightSideBar';
 
 const mapStateToProps = (state) => ({ data: state.clusterDetails });
 

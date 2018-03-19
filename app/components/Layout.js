@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Glyphicon } from 'react-bootstrap';
 
-import { toggleBar as toggleBarAction } from '../containers/Layout/actions';
+import { toggleBar as toggleBarAction } from '../redux/Layout/actions';
 
-import Timeline from '../containers/Timeline/index';
+import Timeline from '../containers/Timeline';
 import LeafletMap from '../containers/LeafletMap/index';
 import LeftSideBar from '../containers/LeftSideBar';
 import RightSideBar from '../containers/RightSideBar';

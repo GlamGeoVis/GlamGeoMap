@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { FormControl, ControlLabel, FormGroup, Panel, Button } from 'react-bootstrap';
-import { setFilter } from '../containers/LeftSideBar/actions';
+import { setFilter } from '../redux/LeftSideBar/actions';
 
 export default class LeftSideBar extends React.Component {
   onEnterApply = (e) => {

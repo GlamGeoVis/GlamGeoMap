@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import styled from 'styled-components';
 import { Dropdown, Glyphicon, MenuItem } from 'react-bootstrap';
-import { setTimeRange } from '../../containers/Timeline/actions';
+import { setTimeRange } from '../../redux/Timeline/actions';
 import { colorForYear, rgbString } from '../../utils/colors';
 
 export default class Timeline extends React.Component {

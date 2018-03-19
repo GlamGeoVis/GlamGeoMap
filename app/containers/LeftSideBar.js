@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import LeftSideBar from '../../components/LeftSideBar';
+import LeftSideBar from '../components/LeftSideBar';
 
 function mapDispatchToProps(dispatch) {
   return {

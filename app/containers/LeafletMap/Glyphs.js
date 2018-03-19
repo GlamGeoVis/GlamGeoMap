@@ -3,6 +3,7 @@ import Glyphs from '../../components/LeafletMap/Glyphs';
 
 const mapStateToProps = (state) => ({
   glyphs: state.glyphs,
+  zoomLevel: state.leafletMap.zoomLevel,
 });
 
 function mapDispatchToProps(dispatch) {
