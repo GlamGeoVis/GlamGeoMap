@@ -9,7 +9,6 @@ export default class extends React.Component {
   };
 
   componentWillReceiveProps(newProps) {
-    console.log(newProps);
     this._input.value = newProps.value;
   }
 
@@ -28,9 +27,9 @@ export default class extends React.Component {
           defaultValue={this.props.value}
           ref={(input) => { this._input = input; }}
           onMouseUp={(e) => {
-            const distances = this.props.zoomToScale.map((v) => Math.abs(v - e.target.value));
-            const closest = distances.indexOf(Math.min(...distances));
-            e.target.value = this.props.zoomToScale[closest];
+            // const distances = this.props.zoomToScale.map((v) => Math.abs(v - e.target.value));
+            // const closest = distances.indexOf(Math.min(...distances));
+            // e.target.value = this.props.zoomToScale[closest];
             if (this.props.onChange) {
               this.props.onChange(e.target.value);
             }

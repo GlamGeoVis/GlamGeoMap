@@ -40,11 +40,13 @@ export default class LeafletMap extends React.PureComponent {
     window.map = this.map;
     this.setMapBounds();
     this.map.on('moveend', this.setMapBounds);
-    this.map.on('zoomend', () => {
-      console.log('bla');
-      this.props.dispatch(setZoomLevel(this.map.getZoom()));
+    this.map.on('zoomanim', (e) => {
+      this.glyphs.wrappedInstance.zoom(e.target._animateToZoom - e.target.getZoom());
     });
-    // this.forceUpdate();
+    this.map.on('zoomend', (e) => {
+      this.setMapBounds();
+      this.props.dispatch(setZoomLevel(e.target.getZoom()));
+    });
   }
 
   setMapBounds = () => {
@@ -65,10 +67,6 @@ export default class LeafletMap extends React.PureComponent {
     });
   };
 
-  // shouldComponentUpdate() {
-    // return false;
-  // }
-
   render() {
     return (
       <div style={{ ...this.props.style, position: 'relative' }}>
@@ -78,7 +76,7 @@ export default class LeafletMap extends React.PureComponent {
             <Scaler />
           </Top>
         </Overlay>
-        { this.map && <Glyphs mapBounds={this.state.mapBounds} map={this.map} /> }
+        { this.map && <Glyphs ref={(g) => { this.glyphs = g; }} mapBounds={this.state.mapBounds} map={this.map} /> }
       </div>
     );
   }
