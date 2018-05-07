@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ngeohash from 'ngeohash';
 import styled from 'styled-components';
 import { Map, TileLayer } from 'react-leaflet';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
