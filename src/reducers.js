@@ -32,12 +32,12 @@ function routeReducer(state = routeInitialState, action) {
 const fixedData = () => {
   const dataSets = {
     risse: {
-      backendURL: process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8000',
+      backendURL: process.env.REACT_APP_BACKEND_URL,
       rows: 6924,
       name: 'risse',
     },
     trove: {
-      backendURL: process.env.NODE_ENV === 'production' ? '/trove' : 'http://localhost:8000',
+      backendURL: `${process.env.REACT_APP_BACKEND_URL}?trove`,
       rows: 100563,
       name: 'trove',
     },

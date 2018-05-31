@@ -14,17 +14,16 @@
     "react-bootstrap": "^0.31.5",
     "react-dom": "15.6.1",
     "react-redux": "5.0.5",
-    "react-table": "^6.7.4",
+    "react-router-redux": "5.0.0-alpha.9",
     "react-scripts": "1.1.4",
+    "react-table": "^6.7.4",
     "redux": "3.6.0",
     "redux-saga": "0.15.3",
     "sanitize.css": "4.1.0",
     "styled-components": "2.0.0",
     "whatwg-fetch": "2.0.3"
   },
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
